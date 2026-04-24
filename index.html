@@ -376,9 +376,11 @@ async function loadAll(){
     // 3. LNG exports — via v2 seriesid translator (lngexp path not valid in v2)
     const lngData = await fetchSeriesId('NG.N9133US2.M');
 
-    DATA.storage = storageData;
-    DATA.prod    = prodData;
-    DATA.lng     = lngData;
+    DATA.storage = storageData.sort((a,b) => a.date.localeCompare(b.date));
+    DATA.prod    = prodData.map(d => ({...d, value: d.value / 1000}))
+                           .sort((a,b) => a.date.localeCompare(b.date));
+    DATA.lng     = lngData.map(d => ({...d, value: d.value / 1000}))
+                          .sort((a,b) => a.date.localeCompare(b.date));
 
     renderAll();
     setDot('ok'); setBadge('live','Live data');
