@@ -317,22 +317,23 @@ async function fetchEIA(path, params, valueKey){
   })).filter(d=>!isNaN(d.value));
 }
 
-// ── EIA v1 FALLBACK (for series without valid v2 path) ────────────────────────
-async function fetchV1Series(seriesId){
+// ── EIA v2 /seriesid/ translator (for series without direct v2 path) ──────────
+async function fetchSeriesId(seriesId){
   incApiCount();
-  const url = `https://api.eia.gov/series/?api_key=${API_KEY}&series_id=${seriesId}&out=json`;
+  // v2 seriesid route: translates v1-style IDs → returns v2-formatted data
+  let qs = `api_key=${API_KEY}&data[0]=value&sort[0][column]=period&sort[0][direction]=asc&length=1000`;
+  const url = `https://api.eia.gov/v2/seriesid/${seriesId}?${qs}`;
   let res, json;
   try { res = await fetch(url); } catch(e) { throw new Error(`Network error: ${e.message}`); }
   try { json = await res.json(); } catch(e) { throw new Error(`Invalid JSON (HTTP ${res.status})`); }
-  if(json.data?.error) throw new Error(`EIA v1 error: ${json.data.error}`);
-  const series = json.series?.[0];
-  if(!series) throw new Error(`No series data for ${seriesId}`);
-  // v1 data is [[period, value], ...] newest-first → reverse
-  return series.data.slice().reverse().map(([period, val]) => ({
-    date: period.length === 6
-      ? `${period.slice(0,4)}-${period.slice(4,6)}`
-      : period,
-    value: parseFloat(val)
+  if(!res.ok || json.response?.error) throw new Error(`EIA seriesid error: ${json.response?.error || res.status}\nURL: ${url}`);
+  const rows = json.response?.data || [];
+  if(!rows.length) throw new Error(`No data for seriesid ${seriesId}`);
+  return rows.map(row => ({
+    date: row.period.length === 6
+      ? `${row.period.slice(0,4)}-${row.period.slice(4,6)}`
+      : row.period,
+    value: parseFloat(row.value)
   })).filter(d => !isNaN(d.value));
 }
 
@@ -372,8 +373,8 @@ async function loadAll(){
       'value'
     );
 
-    // 3. LNG exports — via v1 series API (v2 path for lngexp no longer valid)
-    const lngData = await fetchV1Series('NG.N9133US2.M');
+    // 3. LNG exports — via v2 seriesid translator (lngexp path not valid in v2)
+    const lngData = await fetchSeriesId('NG.N9133US2.M');
 
     DATA.storage = storageData;
     DATA.prod    = prodData;
