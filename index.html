@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>NatGas Fundamentals Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -14,7 +12,7 @@
   --border:#21262d;--border2:#30363d;
   --text:#e6edf3;--text2:#8b949e;--text3:#6e7681;
   --blue:#4493f8;--orange:#f0883e;--red:#ff7b72;--green:#3fb950;
-  --yellow:#e3b341;--purple:#a371f7;
+  --yellow:#e3b341;
   --font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -33,13 +31,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
 .dot.err{background:var(--red)}
 .dot.loading{background:var(--yellow);animation:pulse .6s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.cache-badge{font-size:10px;font-family:var(--mono);padding:3px 8px;border-radius:4px;border:1px solid}
-.cache-live{background:rgba(63,185,80,.1);color:var(--green);border-color:rgba(63,185,80,.3)}
-.cache-loading{background:rgba(68,147,248,.1);color:var(--blue);border-color:rgba(68,147,248,.3)}
-.cache-err{background:rgba(255,123,114,.1);color:var(--red);border-color:rgba(255,123,114,.3)}
+.badge{font-size:10px;font-family:var(--mono);padding:3px 8px;border-radius:4px;border:1px solid}
+.badge-live{background:rgba(63,185,80,.1);color:var(--green);border-color:rgba(63,185,80,.3)}
+.badge-loading{background:rgba(68,147,248,.1);color:var(--blue);border-color:rgba(68,147,248,.3)}
+.badge-err{background:rgba(255,123,114,.1);color:var(--red);border-color:rgba(255,123,114,.3)}
+.api-counter{font-size:10px;font-family:var(--mono);padding:3px 8px;border-radius:4px;background:var(--bg3);border:1px solid var(--border2);color:var(--text2)}
 .tw-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
 .tw-label{font-size:10px;color:var(--text2);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
-.tw-btn{background:var(--bg2);border:1px solid var(--border2);color:var(--text2);padding:4px 9px;border-radius:5px;cursor:pointer;font-size:11px;font-family:var(--font);transition:all .15s}
+.tw-btn{background:var(--bg2);border:1px solid var(--border2);color:var(--text2);padding:4px 9px;border-radius:5px;cursor:pointer;font-size:11px;transition:all .15s}
 .tw-btn:hover{border-color:var(--blue);color:var(--blue)}
 .tw-btn.on{background:#1f3a6e;border-color:var(--blue);color:var(--blue)}
 .bias-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
@@ -48,7 +47,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
 @media(max-width:900px){.metric-boxes{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:500px){.metric-boxes{grid-template-columns:repeat(2,1fr)}}
 .mbox{background:var(--bg3);border-radius:6px;padding:10px 12px;min-width:0}
-.mbox-lbl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mbox-lbl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
 .mbox-val{font-size:16px;font-weight:700;font-family:var(--mono);line-height:1.2;word-break:break-word}
 .mbox-sub{font-size:9px;color:var(--text2);margin-top:3px;line-height:1.4}
 .mbox-sm .mbox-val{font-size:13px}
@@ -68,36 +67,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
 .score-row:last-child{margin-bottom:0;padding-top:5px;border-top:1px solid var(--border2)}
 .score-row-label{font-size:10px;color:var(--text2);flex:0 0 170px;white-space:nowrap}
 .score-row-bar{flex:1;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;min-width:30px}
-.score-row-fill{height:100%;border-radius:2px;transition:width .5s,background .5s}
+.score-row-fill{height:100%;border-radius:2px;transition:width .5s}
 .score-row-anom{font-size:10px;font-family:var(--mono);min-width:44px;text-align:right;color:var(--text3)}
 .score-row-eq{font-size:10px;font-family:var(--mono);min-width:10px;text-align:center;color:var(--text3)}
 .score-row-wt{font-size:10px;color:var(--text3);min-width:28px}
 .score-row-val{font-size:10px;font-family:var(--mono);min-width:44px;text-align:right;font-weight:600}
 .score-total-label{font-size:10px;font-weight:600;color:var(--text);flex:0 0 170px}
 .score-total-val{font-size:13px;font-family:var(--mono);font-weight:700;min-width:44px;text-align:right}
-.steo-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
-.steo-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-.steo-release{font-size:10px;font-family:var(--mono);color:var(--text3)}
-.steo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-@media(max-width:700px){.steo-grid{grid-template-columns:repeat(2,1fr)}}
-.steo-box{background:var(--bg3);border-radius:6px;padding:12px 14px;min-width:0;border-left:3px solid var(--border2)}
-.steo-box.inj{border-left-color:var(--green)}
-.steo-box.wit{border-left-color:var(--red)}
-.steo-month{font-size:10px;font-weight:600;color:var(--text2);letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px}
-.steo-val{font-size:22px;font-weight:700;font-family:var(--mono);line-height:1;margin-bottom:3px}
-.steo-val.inj{color:var(--green)}
-.steo-val.wit{color:var(--red)}
-.steo-val.neu{color:var(--text3)}
-.steo-type{font-size:9px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
-.steo-type.inj{color:#7ed49a}
-.steo-type.wit{color:#ffaa99}
-.steo-type.neu{color:var(--text3)}
-.steo-meta{font-size:10px;color:var(--text3);font-family:var(--mono);line-height:1.7}
-.steo-badge{display:inline-block;font-size:9px;padding:2px 6px;border-radius:3px;font-family:var(--mono);margin-top:3px}
-.steo-badge.above{background:rgba(63,185,80,.12);color:#7ed49a}
-.steo-badge.below{background:rgba(255,123,114,.12);color:#ffaa99}
-.steo-badge.inline{background:rgba(227,179,65,.1);color:var(--yellow)}
-.steo-note{font-size:10px;color:var(--text3);margin-top:10px;padding-top:8px;border-top:1px solid var(--border);line-height:1.6}
 .block{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
 .bhead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:6px}
 .btitle{font-size:11px;font-weight:600;color:var(--text)}
@@ -110,6 +86,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
 .spin{text-align:center;padding:40px;color:var(--text2);font-size:12px}
 .sp{display:inline-block;width:14px;height:14px;border:2px solid var(--bg4);border-top-color:var(--blue);border-radius:50%;animation:spinkf .8s linear infinite;margin-right:6px;vertical-align:middle}
 @keyframes spinkf{to{transform:rotate(360deg)}}
+.err-detail{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:10px;margin-top:8px;font-size:11px;font-family:var(--mono);color:var(--text2);white-space:pre-wrap;word-break:break-all;max-height:120px;overflow-y:auto}
 </style>
 </head>
 <body>
@@ -120,8 +97,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
     <div class="sub">Storage · Production · LNG Exports · Lower 48 · Bcf</div>
   </div>
   <div class="hdr-r">
+    <span class="api-counter" id="api-counter">API calls: 0</span>
     <button class="btn primary" onclick="loadAll()">↻ Refresh</button>
-    <span class="cache-badge cache-loading" id="cache-badge">Loading…</span>
+    <span class="badge badge-loading" id="status-badge">Loading…</span>
     <span class="dot loading" id="sdot"></span>
     <span class="upd" id="upd-lbl">Connecting…</span>
   </div>
@@ -129,11 +107,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
 
 <div class="tw-bar">
   <span class="tw-label">History:</span>
-  <button class="tw-btn" id="tw-2y"  onclick="setWindow('2y')">2 years</button>
+  <button class="tw-btn" id="tw-2y" onclick="setWindow('2y')">2 years</button>
   <button class="tw-btn on" id="tw-1y" onclick="setWindow('1y')">1 year</button>
   <button class="tw-btn" id="tw-ytd" onclick="setWindow('ytd')">YTD</button>
-  <button class="tw-btn" id="tw-3m"  onclick="setWindow('3m')">3 months</button>
-  <button class="tw-btn" id="tw-1m"  onclick="setWindow('1m')">1 month</button>
+  <button class="tw-btn" id="tw-3m" onclick="setWindow('3m')">3 months</button>
+  <button class="tw-btn" id="tw-1m" onclick="setWindow('1m')">1 month</button>
 </div>
 
 <!-- BIAS CARD -->
@@ -192,23 +170,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
   </div>
 </div>
 
-<!-- STEO STORAGE OUTLOOK -->
-<div class="steo-card">
-  <div class="steo-header">
-    <div class="section-label" style="margin-bottom:0">EIA STEO — Storage Outlook · Next 4 Months</div>
-    <span class="steo-release" id="steo-release">Monthly EIA forecast · NGWHHD series</span>
-  </div>
-  <div class="steo-grid" id="steo-grid">
-    <div class="steo-box"><div class="steo-month">—</div><div class="steo-val neu">—</div><div class="steo-meta">Loading…</div></div>
-    <div class="steo-box"><div class="steo-month">—</div><div class="steo-val neu">—</div><div class="steo-meta">Loading…</div></div>
-    <div class="steo-box"><div class="steo-month">—</div><div class="steo-val neu">—</div><div class="steo-meta">Loading…</div></div>
-    <div class="steo-box"><div class="steo-month">—</div><div class="steo-val neu">—</div><div class="steo-meta">Loading…</div></div>
-  </div>
-  <div class="steo-note">
-    <strong style="color:var(--text2)">O STEO:</strong> EIA vydává Short-Term Energy Outlook každý měsíc (vždy druhý týden). Zobrazené hodnoty jsou měsíční čistá změna storage (injekce = zelená / kladná, výběr = červená / záporná) odvozená z STEO prognózy úrovně zásob. EIA <em>nevydává</em> týdenní forecasts injection/withdrawal — ty produkují pouze komerční analytické firmy (Wood Mackenzie, Bloomberg). STEO je jediný veřejně dostupný bezplatný forward-looking zdroj.
-  </div>
-</div>
-
 <!-- STORAGE CHART -->
 <div class="block">
   <div class="bhead">
@@ -251,13 +212,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
   <div class="cw" style="height:220px;display:none" id="wrap-lng"><canvas id="c-lng"></canvas></div>
 </div>
 
-<div style="padding:8px 0 4px;font-size:10px;color:var(--text3);font-family:var(--mono);text-align:right">Source: U.S. Energy Information Administration (EIA) · api.eia.gov/v2 · STEO</div>
+<!-- ERROR LOG -->
+<div id="err-block" style="display:none" class="block">
+  <div class="btitle" style="color:var(--red);margin-bottom:6px">⚠ API Error Details</div>
+  <div class="err-detail" id="err-detail"></div>
+</div>
+
+<div style="padding:8px 0 4px;font-size:10px;color:var(--text3);font-family:var(--mono);text-align:right">Source: U.S. Energy Information Administration (EIA) · api.eia.gov/v2</div>
 
 <script>
 const API_KEY = '0a6cBnSfbVdXpRPcDeuQAeTjGXajaK16pPM8sMF6';
 let currentWindow = '1y';
-let DATA = { storage:[], prod:[], lng:[], steo:[] };
+let DATA = { storage:[], prod:[], lng:[] };
 let charts = { stor:null, prod:null, lng:null };
+let apiCallCount = 0;
 const TW = { '2y':{days:730},'1y':{days:365},'ytd':{days:null},'3m':{days:90},'1m':{days:30} };
 const WEIGHTS = { stor:0.50, prod:0.25, lng:0.25 };
 
@@ -266,15 +234,23 @@ const sgn = v => v>=0?'+':'';
 const fmtBcf = v => Math.round(v).toLocaleString();
 const fmtPct = v => (v>=0?'+':'')+v.toFixed(1)+'%';
 
+function incApiCount(){
+  apiCallCount++;
+  document.getElementById('api-counter').textContent = `API calls: ${apiCallCount}`;
+}
 function setDot(s){document.getElementById('sdot').className='dot '+s;}
-function setBadge(cls,txt){const el=document.getElementById('cache-badge');el.textContent=txt;el.className='cache-badge cache-'+cls;}
+function setBadge(cls,txt){const el=document.getElementById('status-badge');el.textContent=txt;el.className='badge badge-'+cls;}
+function showErr(msg){
+  document.getElementById('err-block').style.display='block';
+  document.getElementById('err-detail').textContent=msg;
+}
+function hideErr(){document.getElementById('err-block').style.display='none';}
 
 function parseDate(iso){
   return new Date((iso.length===7?iso+'-15':iso)+'T12:00:00Z');
 }
 function shortDate(iso){return parseDate(iso).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
 function shortMonth(iso){return parseDate(iso).toLocaleDateString('en-US',{month:'short',year:'2-digit'});}
-function longMonth(iso){return parseDate(iso).toLocaleDateString('en-US',{month:'long',year:'numeric'});}
 
 function getHistDays(){
   if(currentWindow==='ytd'){const n=new Date();return Math.max(1,Math.floor((n-new Date(n.getFullYear(),0,1))/864e5));}
@@ -284,7 +260,6 @@ function filterByWindow(series){
   const days=getHistDays(),cutoff=new Date();cutoff.setDate(cutoff.getDate()-days);
   return series.filter(d=>parseDate(d.date)>=cutoff);
 }
-
 function compute5y(allData,filteredDates){
   const avgs=[],mins=[],maxs=[];
   filteredDates.forEach(date=>{
@@ -305,84 +280,141 @@ function compute5y(allData,filteredDates){
   return{avgs,mins,maxs};
 }
 
-function renderSteoOutlook(){
-  const steo=DATA.steo;
-  if(!steo.length)return;
-  steo.sort((a,b)=>a.date.localeCompare(b.date));
-  const now=new Date();
-  const currentYM=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  const future=steo.filter(d=>d.date>currentYM).slice(0,4);
-  if(!future.length)return;
-  const grid=document.getElementById('steo-grid');
-  grid.innerHTML=future.map(entry=>{
-    const idx=steo.findIndex(d=>d.date===entry.date);
-    const prev=idx>0?steo[idx-1]:null;
-    const netChange=prev!==null?entry.value-prev.value:null;
-    const [yr,mo]=entry.date.split('-').map(Number);
-    let hist5yAvg=null;
-    if(DATA.storage.length){
-      const byYear={};
-      DATA.storage.forEach(d=>{
-        const pd=parseDate(d.date);
-        const diffYr=yr-pd.getFullYear();
-        if(diffYr>=1&&diffYr<=5&&pd.getMonth()+1===mo){
-          const y=pd.getFullYear();
-          if(!byYear[y])byYear[y]=[];
-          byYear[y].push(d);
-        }
-      });
-      const changes=Object.values(byYear).map(pts=>{
-        pts.sort((a,b)=>a.date.localeCompare(b.date));
-        if(pts.length<2)return null;
-        return pts[pts.length-1].value-pts[0].value;
-      }).filter(v=>v!==null);
-      if(changes.length)hist5yAvg=changes.reduce((a,b)=>a+b)/changes.length;
-    }
-    const isInj=netChange!==null&&netChange>=0;
-    const valCls=netChange===null?'neu':Math.abs(netChange)<15?'neu':isInj?'inj':'wit';
-    const changeStr=netChange===null?'—':(isInj?'+':'')+Math.round(netChange).toLocaleString()+' Bcf';
-    const typeStr=netChange===null?'—':isInj?'▲ Injection':'▼ Withdrawal';
-    const endLvl=Math.round(entry.value).toLocaleString();
-    let badgeHtml='';
-    if(hist5yAvg!==null&&netChange!==null){
-      const diff=netChange-hist5yAvg;
-      const badgeCls=Math.abs(diff)<20?'inline':diff>0===isInj?'above':'below';
-      badgeHtml=`<span class="steo-badge ${badgeCls}">${(diff>=0?'+':'')+Math.round(diff).toLocaleString()} Bcf vs 5y avg</span>`;
-    }
-    return `<div class="steo-box ${valCls}">
-      <div class="steo-month">${longMonth(entry.date)}</div>
-      <div class="steo-val ${valCls}">${changeStr}</div>
-      <div class="steo-type ${valCls}">${typeStr}</div>
-      <div class="steo-meta">End level: ${endLvl} Bcf<br>${badgeHtml}</div>
-    </div>`;
-  }).join('');
-  document.getElementById('steo-release').textContent=
-    `STEO forecast · updated ${new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'})}`;
+// ── EIA API FETCH ─────────────────────────────────────────────────────────────
+// Builds URL with literal brackets — NOT encoded — as EIA v2 requires
+function buildEiaUrl(path, params){
+  let qs = `api_key=${API_KEY}`;
+  for(const [k,v] of Object.entries(params)){
+    // keys like "data[0]", "facets[series][]", "sort[0][column]" must stay literal
+    qs += `&${k}=${encodeURIComponent(v)}`;
+  }
+  return `https://api.eia.gov/v2/${path}?${qs}`;
 }
 
+async function fetchEIA(path, params, valueKey){
+  incApiCount();
+  const url = buildEiaUrl(path, params);
+  let res, json;
+  try {
+    res = await fetch(url);
+  } catch(e) {
+    throw new Error(`Network error: ${e.message}`);
+  }
+  try {
+    json = await res.json();
+  } catch(e) {
+    throw new Error(`Invalid JSON response (HTTP ${res.status})`);
+  }
+  if(!res.ok || json.response?.error){
+    const detail = json.response?.error || json.error || `HTTP ${res.status}`;
+    throw new Error(`EIA error: ${detail}\nURL: ${url}`);
+  }
+  const rows = json.response?.data || [];
+  if(!rows.length) throw new Error(`No data returned.\nURL: ${url}`);
+  return rows.map(row=>({
+    date: row.period,
+    value: parseFloat(row[valueKey] ?? row.value)
+  })).filter(d=>!isNaN(d.value));
+}
+
+// ── LOAD ALL DATA ─────────────────────────────────────────────────────────────
+async function loadAll(){
+  setDot('loading'); setBadge('loading','Loading…');
+  document.getElementById('upd-lbl').textContent='Fetching from EIA…';
+  hideErr();
+  resetSpinners();
+
+  try {
+    // 1. Weekly storage — Lower 48 — series NW2_EPG0_SWO_R48_BCF
+    const storageData = await fetchEIA(
+      'natural-gas/stor/wkly/data',
+      {
+        'frequency':           'weekly',
+        'data[0]':             'value',
+        'facets[series][]':    'NW2_EPG0_SWO_R48_BCF',
+        'sort[0][column]':     'period',
+        'sort[0][direction]':  'asc',
+        'length':              '1000'
+      },
+      'value'
+    );
+
+    // 2. Dry gas production — series N9070US2
+    const prodData = await fetchEIA(
+      'natural-gas/prod/sum/data',
+      {
+        'frequency':           'monthly',
+        'data[0]':             'value',
+        'facets[series][]':    'N9070US2',
+        'sort[0][column]':     'period',
+        'sort[0][direction]':  'asc',
+        'length':              '1000'
+      },
+      'value'
+    );
+
+    // 3. LNG exports — series N9133US2
+    const lngData = await fetchEIA(
+      'natural-gas/move/lngexp/data',
+      {
+        'frequency':           'monthly',
+        'data[0]':             'value',
+        'facets[series][]':    'N9133US2',
+        'sort[0][column]':     'period',
+        'sort[0][direction]':  'asc',
+        'length':              '1000'
+      },
+      'value'
+    );
+
+    DATA.storage = storageData;
+    DATA.prod    = prodData;
+    DATA.lng     = lngData;
+
+    renderAll();
+    setDot('ok'); setBadge('live','Live data');
+    document.getElementById('upd-lbl').textContent =
+      new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+
+  } catch(e) {
+    setDot('err'); setBadge('err','Error');
+    document.getElementById('upd-lbl').textContent = 'Error — see below';
+    ['spin-stor','spin-prod','spin-lng'].forEach(id=>{
+      document.getElementById(id).innerHTML=`<span style="color:var(--red)">⚠ ${e.message.split('\n')[0]}</span>`;
+    });
+    showErr(e.message);
+    console.error(e);
+  }
+}
+
+// ── BIAS ──────────────────────────────────────────────────────────────────────
 function computeBias(){
   if(!DATA.storage.length||!DATA.prod.length||!DATA.lng.length)return;
+
   const storL=DATA.storage[DATA.storage.length-1];
   const s5=compute5y(DATA.storage,[storL.date]);
   const storAvg=s5.avgs[0];
   const storDevBcf=storAvg?storL.value-storAvg:0;
   const storDevPct=storAvg?(storDevBcf/storAvg*100):0;
   const storAnom=clamp(-storDevPct/10,-3,3);
+
   const prodL=DATA.prod[DATA.prod.length-1];
   const p5=compute5y(DATA.prod,[prodL.date]);
   const prodAvg=p5.avgs[0];
   const prodDevPct=prodAvg?((prodL.value-prodAvg)/prodAvg*100):0;
   const prodAnom=clamp(-prodDevPct/5,-3,3);
+
   const lngL=DATA.lng[DATA.lng.length-1];
   const l5=compute5y(DATA.lng,[lngL.date]);
   const lngAvg=l5.avgs[0];
   const lngDevPct=lngAvg?((lngL.value-lngAvg)/lngAvg*100):0;
   const lngAnom=clamp(lngDevPct/10,-3,3);
+
   const cStor=storAnom*WEIGHTS.stor,cProd=prodAnom*WEIGHTS.prod,cLng=lngAnom*WEIGHTS.lng;
   const score=clamp(cStor+cProd+cLng,-5,5);
 
   function setM(vi,si,val,sub,col){
-    document.getElementById(vi).textContent=val;document.getElementById(vi).style.color=col;
+    const e=document.getElementById(vi);e.textContent=val;e.style.color=col;
     if(si)document.getElementById(si).textContent=sub;
   }
   const sCol=Math.abs(storDevPct)<3?'var(--yellow)':storDevBcf<0?'var(--green)':'var(--red)';
@@ -420,12 +452,13 @@ function computeBias(){
   document.getElementById('sm-lng').innerHTML=sRow('LNG exports vs 5y avg',lngAnom,WEIGHTS.lng,cLng);
   document.getElementById('sm-total').innerHTML=sRow('Total score (clipped ±5)',0,0,0,true);
 }
-function biasLabel(score){
-  if(score>2.5)return{w:'BULLISH',cls:'bull'};if(score>0.8)return{w:'SL. BULLISH',cls:'sbull'};
-  if(score<-2.5)return{w:'BEARISH',cls:'bear'};if(score<-0.8)return{w:'SL. BEARISH',cls:'sbear'};
+function biasLabel(s){
+  if(s>2.5)return{w:'BULLISH',cls:'bull'};if(s>0.8)return{w:'SL. BULLISH',cls:'sbull'};
+  if(s<-2.5)return{w:'BEARISH',cls:'bear'};if(s<-0.8)return{w:'SL. BEARISH',cls:'sbear'};
   return{w:'NEUTRAL',cls:'neut'};
 }
 
+// ── CHARTS ────────────────────────────────────────────────────────────────────
 function gBase(){
   return{responsive:true,maintainAspectRatio:false,animation:{duration:300},
     plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2128',titleColor:'#e6edf3',bodyColor:'#8b949e',borderColor:'#30363d',borderWidth:1,padding:10,titleFont:{family:'Inter',size:11},bodyFont:{family:'Inter',size:11}}},
@@ -471,11 +504,10 @@ function drawChart(key,spinId,wrapId,canvasId,series,color,bandColor,isWeekly){
 }
 
 function renderAll(){
-  if(DATA.storage.length)drawChart('stor','spin-stor','wrap-stor','c-stor',DATA.storage,'#4493f8','rgba(68,147,248,0.09)',true);
-  if(DATA.prod.length)   drawChart('prod','spin-prod','wrap-prod','c-prod',DATA.prod,   '#3fb950','rgba(63,185,80,0.08)', false);
-  if(DATA.lng.length)    drawChart('lng', 'spin-lng', 'wrap-lng', 'c-lng', DATA.lng,    '#f0883e','rgba(240,136,62,0.09)',false);
+  if(DATA.storage.length) drawChart('stor','spin-stor','wrap-stor','c-stor',DATA.storage,'#4493f8','rgba(68,147,248,0.09)',true);
+  if(DATA.prod.length)    drawChart('prod','spin-prod','wrap-prod','c-prod',DATA.prod,   '#3fb950','rgba(63,185,80,0.08)', false);
+  if(DATA.lng.length)     drawChart('lng', 'spin-lng', 'wrap-lng', 'c-lng', DATA.lng,    '#f0883e','rgba(240,136,62,0.09)',false);
   computeBias();
-  if(DATA.steo.length)renderSteoOutlook();
   updateSubtitles();
 }
 function updateSubtitles(){
@@ -486,58 +518,6 @@ function updateSubtitles(){
     document.getElementById(id).textContent=`${freq} · Bcf · ${w} history vs 5-year range`;
   });
 }
-
-async function fetchEIA(path,facets,frequency,dataCol){
-  // Build query string manually — EIA v2 requires literal brackets, not encoded
-  let qs=`api_key=${API_KEY}&frequency=${frequency}&data[0]=${dataCol}`;
-  qs+=`&sort[0][column]=period&sort[0][direction]=asc&length=1000`;
-  if(facets)Object.entries(facets).forEach(([k,v])=>{qs+=`&facets[${k}][]=${encodeURIComponent(v)}`;});
-  const res=await fetch(`https://api.eia.gov/v2/${path}?${qs}`);
-  if(!res.ok){
-    let msg=`EIA ${res.status}`;
-    try{const j=await res.json();if(j.response?.error)msg=j.response.error;}catch(e){}
-    throw new Error(msg);
-  }
-  const json=await res.json();
-  if(json.response?.error)throw new Error(json.response.error);
-  return(json.response?.data||[]).map(row=>({date:row.period,value:parseFloat(row[dataCol])})).filter(d=>!isNaN(d.value));
-}
-async function fetchSTEO(){
-  let qs=`api_key=${API_KEY}&frequency=monthly&data[0]=value`;
-  qs+=`&facets[seriesId][]=NGWHHD&sort[0][column]=period&sort[0][direction]=asc&length=30`;
-  const res=await fetch(`https://api.eia.gov/v2/steo/data?${qs}`);
-  if(!res.ok){
-    let msg=`STEO ${res.status}`;
-    try{const j=await res.json();if(j.response?.error)msg=j.response.error;}catch(e){}
-    throw new Error(msg);
-  }
-  const json=await res.json();
-  return(json.response?.data||[]).map(row=>({date:row.period,value:parseFloat(row.value)})).filter(d=>!isNaN(d.value));
-}
-
-async function loadAll(){
-  setDot('loading');setBadge('loading','Loading…');
-  document.getElementById('upd-lbl').textContent='Fetching from EIA…';
-  resetSpinners();
-  try{
-    const[storageRaw,prodRaw,lngRaw,steoRaw]=await Promise.all([
-      fetchEIA('natural-gas/stor/wkly/data',{series:'NW2_EPG0_SWO_R48_BCF'},'weekly','value'),
-      fetchEIA('natural-gas/prod/sum/data',{series:'N9070US2'},'monthly','value'),
-      fetchEIA('natural-gas/move/lngexp/data',{series:'N9133US2'},'monthly','value'),
-      fetchSTEO(),
-    ]);
-    DATA.storage=storageRaw;DATA.prod=prodRaw;DATA.lng=lngRaw;DATA.steo=steoRaw;
-    renderAll();
-    setDot('ok');setBadge('live','Live data');
-    document.getElementById('upd-lbl').textContent=new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  }catch(e){
-    setDot('err');setBadge('err','Error');
-    document.getElementById('upd-lbl').textContent='Error: '+e.message;
-    ['spin-stor','spin-prod','spin-lng'].forEach(id=>{document.getElementById(id).innerHTML=`<span style="color:var(--red)">⚠ ${e.message}</span>`;});
-    console.error(e);
-  }
-}
-
 function setWindow(w){
   if(currentWindow===w)return;currentWindow=w;
   Object.keys(TW).forEach(k=>document.getElementById('tw-'+k).classList.toggle('on',k===w));
@@ -545,7 +525,10 @@ function setWindow(w){
 }
 function resetSpinners(){
   ['wrap-stor','wrap-prod','wrap-lng'].forEach(id=>document.getElementById(id).style.display='none');
-  ['spin-stor','spin-prod','spin-lng'].forEach(id=>{document.getElementById(id).style.display='block';document.getElementById(id).innerHTML='<span class="sp"></span>Loading…';});
+  ['spin-stor','spin-prod','spin-lng'].forEach(id=>{
+    document.getElementById(id).style.display='block';
+    document.getElementById(id).innerHTML='<span class="sp"></span>Loading…';
+  });
 }
 function toggleAccordion(){
   const body=document.getElementById('accordion-body'),arrow=document.getElementById('accordion-arrow');
@@ -553,7 +536,6 @@ function toggleAccordion(){
   arrow.style.transform=open?'rotate(90deg)':'rotate(0deg)';
 }
 
-// Auto-load on startup
 loadAll();
 </script>
 </body>
