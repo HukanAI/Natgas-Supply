@@ -12,11 +12,12 @@
   --border:#21262d;--border2:#30363d;
   --text:#e6edf3;--text2:#8b949e;--text3:#6e7681;
   --blue:#4493f8;--orange:#f0883e;--red:#ff7b72;--green:#3fb950;
-  --yellow:#e3b341;
+  --yellow:#e3b341;--purple:#a371f7;
   --font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px;min-height:100vh;font-size:13px;line-height:1.5}
+/* HEADER */
 .hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
 .hdr-l h1{font-size:13px;font-weight:600;color:var(--blue);letter-spacing:.5px;margin-bottom:2px}
 .hdr-l .sub{font-size:11px;color:var(--text2)}
@@ -25,7 +26,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
 .btn{background:var(--bg2);border:1px solid var(--border2);color:var(--text2);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:11px;font-family:var(--font);font-weight:500;transition:all .15s}
 .btn:hover{border-color:var(--blue);color:var(--blue)}
 .btn.primary{background:#1f3a6e;border-color:var(--blue);color:var(--blue)}
-.btn.primary:hover{background:#2a4d8f}
 .dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
 .dot.ok{background:var(--green);animation:pulse 2s infinite}
 .dot.err{background:var(--red)}
@@ -36,16 +36,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
 .badge-loading{background:rgba(68,147,248,.1);color:var(--blue);border-color:rgba(68,147,248,.3)}
 .badge-err{background:rgba(255,123,114,.1);color:var(--red);border-color:rgba(255,123,114,.3)}
 .api-counter{font-size:10px;font-family:var(--mono);padding:3px 8px;border-radius:4px;background:var(--bg3);border:1px solid var(--border2);color:var(--text2)}
+/* TIME WINDOW */
 .tw-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
 .tw-label{font-size:10px;color:var(--text2);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
 .tw-btn{background:var(--bg2);border:1px solid var(--border2);color:var(--text2);padding:4px 9px;border-radius:5px;cursor:pointer;font-size:11px;transition:all .15s}
 .tw-btn:hover{border-color:var(--blue);color:var(--blue)}
 .tw-btn.on{background:#1f3a6e;border-color:var(--blue);color:var(--blue)}
+/* BIAS CARD */
 .bias-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
 .section-label{font-size:10px;font-weight:600;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.metric-boxes{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:12px}
-@media(max-width:900px){.metric-boxes{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:500px){.metric-boxes{grid-template-columns:repeat(2,1fr)}}
+.metric-boxes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+@media(max-width:800px){.metric-boxes{grid-template-columns:repeat(2,1fr)}}
 .mbox{background:var(--bg3);border-radius:6px;padding:10px 12px;min-width:0}
 .mbox-lbl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
 .mbox-val{font-size:16px;font-weight:700;font-family:var(--mono);line-height:1.2;word-break:break-word}
@@ -74,6 +75,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
 .score-row-val{font-size:10px;font-family:var(--mono);min-width:44px;text-align:right;font-weight:600}
 .score-total-label{font-size:10px;font-weight:600;color:var(--text);flex:0 0 170px}
 .score-total-val{font-size:13px;font-family:var(--mono);font-weight:700;min-width:44px;text-align:right}
+/* CHART BLOCKS */
 .block{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
 .bhead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:6px}
 .btitle{font-size:11px;font-weight:600;color:var(--text)}
@@ -86,6 +88,22 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
 .spin{text-align:center;padding:40px;color:var(--text2);font-size:12px}
 .sp{display:inline-block;width:14px;height:14px;border:2px solid var(--bg4);border-top-color:var(--blue);border-radius:50%;animation:spinkf .8s linear infinite;margin-right:6px;vertical-align:middle}
 @keyframes spinkf{to{transform:rotate(360deg)}}
+/* FUTURES TABLE */
+.fut-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+@media(max-width:700px){.fut-grid{grid-template-columns:repeat(2,1fr)}}
+.fut-box{background:var(--bg3);border-radius:6px;padding:10px 12px;border-left:3px solid var(--border2);min-width:0}
+.fut-box.front{border-left-color:var(--blue)}
+.fut-month{font-size:10px;font-weight:600;color:var(--text2);letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px}
+.fut-price{font-size:20px;font-weight:700;font-family:var(--mono);color:var(--text);line-height:1;margin-bottom:3px}
+.fut-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px}
+.fut-chg{font-size:11px;font-family:var(--mono);margin-top:2px}
+/* RIGS TABLE */
+.rigs-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.rigs-stat{background:var(--bg3);border-radius:6px;padding:8px 12px;min-width:0}
+.rigs-stat-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px}
+.rigs-stat-val{font-size:18px;font-weight:700;font-family:var(--mono);color:var(--text)}
+.rigs-stat-sub{font-size:9px;color:var(--text2);margin-top:2px}
+/* ERROR */
 .err-detail{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:10px;margin-top:8px;font-size:11px;font-family:var(--mono);color:var(--text2);white-space:pre-wrap;word-break:break-all;max-height:120px;overflow-y:auto}
 </style>
 </head>
@@ -94,7 +112,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
 <div class="hdr">
   <div class="hdr-l">
     <h1>📦 NatGas Fundamentals Dashboard</h1>
-    <div class="sub">Storage · Production · LNG Exports · Lower 48 · Bcf</div>
+    <div class="sub">Storage · Futures · Rig Count · Lower 48</div>
   </div>
   <div class="hdr-r">
     <span class="api-counter" id="api-counter">API calls: 0</span>
@@ -129,24 +147,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
       <div class="mbox-sub" id="m-stor-dev-sub">Bcf deviation</div>
     </div>
     <div class="mbox">
-      <div class="mbox-lbl">Production</div>
-      <div class="mbox-val" id="m-prod-val">—</div>
-      <div class="mbox-sub" id="m-prod-sub">Bcf/month</div>
+      <div class="mbox-lbl">Rig Count</div>
+      <div class="mbox-val" id="m-rig-val">—</div>
+      <div class="mbox-sub" id="m-rig-sub">rigs, latest week</div>
     </div>
     <div class="mbox">
-      <div class="mbox-lbl">Prod vs 5Y Avg</div>
-      <div class="mbox-val" id="m-prod-dev">—</div>
-      <div class="mbox-sub" id="m-prod-dev-sub">% deviation</div>
-    </div>
-    <div class="mbox">
-      <div class="mbox-lbl">LNG Exports</div>
-      <div class="mbox-val" id="m-lng-val">—</div>
-      <div class="mbox-sub" id="m-lng-sub">Bcf/month</div>
-    </div>
-    <div class="mbox">
-      <div class="mbox-lbl">LNG vs 5Y Avg</div>
-      <div class="mbox-val" id="m-lng-dev">—</div>
-      <div class="mbox-sub" id="m-lng-dev-sub">% deviation</div>
+      <div class="mbox-lbl">Rigs vs 5Y Avg</div>
+      <div class="mbox-val" id="m-rig-dev">—</div>
+      <div class="mbox-sub" id="m-rig-dev-sub">% deviation</div>
     </div>
   </div>
   <div class="bias-word neut" id="bias-word">—</div>
@@ -161,10 +169,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
       <span class="accordion-arrow" id="accordion-arrow">▶</span>
     </button>
     <div class="accordion-body" id="accordion-body">
-      <div class="score-method-title">Score = Σ (anomaly × weight) · clipped to [−5, +5]</div>
+      <div class="score-method-title">Score = Σ (anomaly × weight) · clipped to [−5, +5] · Storage 75% · Rigs 25%</div>
       <div class="score-row" id="sm-stor"></div>
-      <div class="score-row" id="sm-prod"></div>
-      <div class="score-row" id="sm-lng"></div>
+      <div class="score-row" id="sm-rig"></div>
       <div class="score-row" id="sm-total"></div>
     </div>
   </div>
@@ -184,213 +191,226 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
   <div class="cw" style="height:240px;display:none" id="wrap-stor"><canvas id="c-stor"></canvas></div>
 </div>
 
-<!-- PRODUCTION CHART -->
+<!-- FUTURES SECTION -->
 <div class="block">
   <div class="bhead">
-    <div><div class="btitle">Dry Natural Gas Production — Lower 48</div><div class="bsub" id="prod-sub">Monthly · Bcf · vs 5-year range</div></div>
+    <div><div class="btitle">Henry Hub Natural Gas Futures — NYMEX</div><div class="bsub" id="fut-sub">Front month (RNGC1) daily · $/MMBtu · vs 5-year range</div></div>
     <div class="legend">
-      <span class="li"><span class="ldr" style="background:var(--green)"></span>Production</span>
-      <span class="li"><span class="ldr" style="background:var(--green);opacity:.5"></span>5y Avg</span>
-      <span class="li"><span class="ldband" style="background:rgba(63,185,80,.12)"></span>5y Range</span>
+      <span class="li"><span class="ldr" style="background:var(--yellow)"></span>RNGC1</span>
+      <span class="li"><span class="ldr" style="background:var(--yellow);opacity:.5"></span>5y Avg</span>
+      <span class="li"><span class="ldband" style="background:rgba(227,179,65,.12)"></span>5y Range</span>
     </div>
   </div>
-  <div id="spin-prod" class="spin"><span class="sp"></span>Loading…</div>
-  <div class="cw" style="height:220px;display:none" id="wrap-prod"><canvas id="c-prod"></canvas></div>
+  <div id="spin-fut" class="spin"><span class="sp"></span>Loading…</div>
+  <div class="cw" style="height:220px;display:none" id="wrap-fut"><canvas id="c-fut"></canvas></div>
+  <!-- Futures curve table -->
+  <div class="section-label" style="margin-top:14px;margin-bottom:0">Futures Curve — Current Prices</div>
+  <div class="fut-grid" id="fut-grid">
+    <div class="fut-box"><div class="fut-month">—</div><div class="fut-price">—</div></div>
+    <div class="fut-box"><div class="fut-month">—</div><div class="fut-price">—</div></div>
+    <div class="fut-box"><div class="fut-month">—</div><div class="fut-price">—</div></div>
+    <div class="fut-box"><div class="fut-month">—</div><div class="fut-price">—</div></div>
+    <div class="fut-box"><div class="fut-month">—</div><div class="fut-price">—</div></div>
+  </div>
 </div>
 
-<!-- LNG CHART -->
+<!-- RIG COUNT CHART -->
 <div class="block">
   <div class="bhead">
-    <div><div class="btitle">LNG Exports — U.S. Total</div><div class="bsub" id="lng-sub">Monthly · Bcf · vs 5-year range</div></div>
+    <div><div class="btitle">Natural Gas Rig Count — U.S. (Baker Hughes)</div><div class="bsub" id="rig-sub">Weekly · Rigs · vs 5-year range</div></div>
     <div class="legend">
-      <span class="li"><span class="ldr" style="background:var(--orange)"></span>LNG Exports</span>
-      <span class="li"><span class="ldr" style="background:var(--orange);opacity:.5"></span>5y Avg</span>
-      <span class="li"><span class="ldband" style="background:rgba(240,136,62,.12)"></span>5y Range</span>
+      <span class="li"><span class="ldr" style="background:var(--purple)"></span>Rig Count</span>
+      <span class="li"><span class="ldr" style="background:var(--purple);opacity:.5"></span>5y Avg</span>
+      <span class="li"><span class="ldband" style="background:rgba(163,113,247,.12)"></span>5y Range</span>
     </div>
   </div>
-  <div id="spin-lng" class="spin"><span class="sp"></span>Loading…</div>
-  <div class="cw" style="height:220px;display:none" id="wrap-lng"><canvas id="c-lng"></canvas></div>
+  <div id="spin-rig" class="spin"><span class="sp"></span>Loading…</div>
+  <div class="cw" style="height:220px;display:none" id="wrap-rig"><canvas id="c-rig"></canvas></div>
+  <div class="rigs-meta" id="rigs-meta" style="display:none">
+    <div class="rigs-stat"><div class="rigs-stat-lbl">Current</div><div class="rigs-stat-val" id="rig-cur">—</div><div class="rigs-stat-sub" id="rig-cur-dt">—</div></div>
+    <div class="rigs-stat"><div class="rigs-stat-lbl">5Y Average</div><div class="rigs-stat-val" id="rig-avg">—</div><div class="rigs-stat-sub">same week avg</div></div>
+    <div class="rigs-stat"><div class="rigs-stat-lbl">vs 5Y Avg</div><div class="rigs-stat-val" id="rig-vs">—</div><div class="rigs-stat-sub">% deviation</div></div>
+    <div class="rigs-stat"><div class="rigs-stat-lbl">52w High</div><div class="rigs-stat-val" id="rig-hi">—</div><div class="rigs-stat-sub">—</div></div>
+    <div class="rigs-stat"><div class="rigs-stat-lbl">52w Low</div><div class="rigs-stat-val" id="rig-lo">—</div><div class="rigs-stat-sub">—</div></div>
+  </div>
 </div>
 
-<!-- ERROR LOG -->
+<!-- ERROR -->
 <div id="err-block" style="display:none" class="block">
   <div class="btitle" style="color:var(--red);margin-bottom:6px">⚠ API Error Details</div>
   <div class="err-detail" id="err-detail"></div>
 </div>
 
-<div style="padding:8px 0 4px;font-size:10px;color:var(--text3);font-family:var(--mono);text-align:right">Source: U.S. Energy Information Administration (EIA) · api.eia.gov/v2</div>
+<div style="padding:8px 0 4px;font-size:10px;color:var(--text3);font-family:var(--mono);text-align:right">
+  Source: U.S. Energy Information Administration (EIA) · api.eia.gov/v2 · Baker Hughes rig count via EIA
+</div>
 
 <script>
 const API_KEY = '0a6cBnSfbVdXpRPcDeuQAeTjGXajaK16pPM8sMF6';
-let currentWindow = '1y';
-let DATA = { storage:[], prod:[], lng:[] };
-let charts = { stor:null, prod:null, lng:null };
-let apiCallCount = 0;
+const WEIGHTS = { stor: 0.75, rig: 0.25 };
 const TW = { '2y':{days:730},'1y':{days:365},'ytd':{days:null},'3m':{days:90},'1m':{days:30} };
-const WEIGHTS = { stor:0.50, prod:0.25, lng:0.25 };
 
+let currentWindow = '1y';
+let apiCallCount = 0;
+let DATA = { storage:[], rigs:[], fut:{} }; // fut: { RNGC1:[], RNGC2:[], ... }
+let charts = { stor:null, fut:null, rig:null };
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
 const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
 const sgn = v => v>=0?'+':'';
-const fmtBcf = v => Math.round(v).toLocaleString();
+const fmtN = (v,d=1) => v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
 const fmtPct = v => (v>=0?'+':'')+v.toFixed(1)+'%';
 
-function incApiCount(){
-  apiCallCount++;
-  document.getElementById('api-counter').textContent = `API calls: ${apiCallCount}`;
-}
-function setDot(s){document.getElementById('sdot').className='dot '+s;}
-function setBadge(cls,txt){const el=document.getElementById('status-badge');el.textContent=txt;el.className='badge badge-'+cls;}
-function showErr(msg){
-  document.getElementById('err-block').style.display='block';
-  document.getElementById('err-detail').textContent=msg;
-}
-function hideErr(){document.getElementById('err-block').style.display='none';}
+function incAPI(){ apiCallCount++; document.getElementById('api-counter').textContent=`API calls: ${apiCallCount}`; }
+function setDot(s){ document.getElementById('sdot').className='dot '+s; }
+function setBadge(cls,txt){ const el=document.getElementById('status-badge');el.textContent=txt;el.className='badge badge-'+cls; }
+function showErr(msg){ document.getElementById('err-block').style.display='block'; document.getElementById('err-detail').textContent=msg; }
+function hideErr(){ document.getElementById('err-block').style.display='none'; }
 
 function parseDate(iso){
-  return new Date((iso.length===7?iso+'-15':iso)+'T12:00:00Z');
+  // handles YYYY-MM-DD and YYYYMMDD
+  if(iso.length===8) iso=`${iso.slice(0,4)}-${iso.slice(4,6)}-${iso.slice(6,8)}`;
+  return new Date(iso+'T12:00:00Z');
 }
-function shortDate(iso){return parseDate(iso).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
-function shortMonth(iso){return parseDate(iso).toLocaleDateString('en-US',{month:'short',year:'2-digit'});}
+function fmtDateShort(iso){ return parseDate(iso).toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+function fmtDateShortYear(iso){ return parseDate(iso).toLocaleDateString('en-US',{month:'short',year:'2-digit'}); }
+
+// Get delivery month for RNGC contract number, relative to today
+// NYMEX NG front month expires ~3 biz days before end of prior month
+// We approximate: if today is past the 20th, front month = next calendar month; else current month
+function getFutureContractMonths(){
+  const now = new Date();
+  const yr = now.getFullYear();
+  const mo = now.getMonth(); // 0-based
+  // Approximate expiry: front month rolls ~20th of month before delivery
+  const rollDay = 20;
+  // Start month for RNGC1
+  let startMo = mo; // current month
+  if(now.getDate() >= rollDay) startMo = mo + 1; // rolled to next
+  const months = [];
+  for(let i=0;i<5;i++){
+    const total = startMo + i;
+    const y = yr + Math.floor(total/12);
+    const m = total % 12;
+    months.push({ year:y, month:m }); // month 0-based
+  }
+  return months;
+}
+
+function monthLabel(yr, mo){ // mo 0-based
+  return new Date(yr,mo,1).toLocaleDateString('en-US',{month:'short',year:'numeric'});
+}
 
 function getHistDays(){
-  if(currentWindow==='ytd'){const n=new Date();return Math.max(1,Math.floor((n-new Date(n.getFullYear(),0,1))/864e5));}
+  if(currentWindow==='ytd'){ const n=new Date(); return Math.max(1,Math.floor((n-new Date(n.getFullYear(),0,1))/864e5)); }
   return TW[currentWindow].days;
 }
 function filterByWindow(series){
-  const days=getHistDays(),cutoff=new Date();cutoff.setDate(cutoff.getDate()-days);
+  const days=getHistDays(), cutoff=new Date(); cutoff.setDate(cutoff.getDate()-days);
   return series.filter(d=>parseDate(d.date)>=cutoff);
 }
-function compute5y(allData,filteredDates){
+
+// 5-year band: same calendar period ±7 days, 1-5 years back
+function compute5y(allData, filteredDates, isWeekly=true){
   const avgs=[],mins=[],maxs=[];
   filteredDates.forEach(date=>{
-    const ref=parseDate(date);
-    const peers=allData.filter(p=>{
-      const pd=parseDate(p.date);
-      const diffYears=ref.getFullYear()-pd.getFullYear();
-      if(diffYears<1||diffYears>5)return false;
-      const diffDays=Math.abs((ref.getMonth()*30+ref.getDate())-(pd.getMonth()*30+pd.getDate()));
-      return diffDays<=7;
+    const ref = parseDate(date);
+    const peers = allData.filter(p=>{
+      const pd = parseDate(p.date);
+      const diffYears = ref.getFullYear()-pd.getFullYear();
+      if(diffYears<1||diffYears>5) return false;
+      const tolerance = isWeekly ? 7 : 15;
+      const refDOY = (ref.getMonth()*30+ref.getDate());
+      const pdDOY = (pd.getMonth()*30+pd.getDate());
+      return Math.abs(refDOY-pdDOY) <= tolerance;
     });
-    const vals=peers.map(p=>p.value).filter(v=>!isNaN(v));
+    const vals = peers.map(p=>p.value).filter(v=>!isNaN(v));
     if(vals.length>=2){
-      const avg=vals.reduce((a,b)=>a+b)/vals.length;
-      avgs.push(avg);mins.push(Math.min(...vals));maxs.push(Math.max(...vals));
-    }else{avgs.push(null);mins.push(null);maxs.push(null);}
+      const avg = vals.reduce((a,b)=>a+b)/vals.length;
+      avgs.push(avg); mins.push(Math.min(...vals)); maxs.push(Math.max(...vals));
+    } else { avgs.push(null); mins.push(null); maxs.push(null); }
   });
-  return{avgs,mins,maxs};
+  return {avgs,mins,maxs};
 }
 
-// ── EIA API FETCH ─────────────────────────────────────────────────────────────
-// Builds URL with literal brackets — NOT encoded — as EIA v2 requires
-function buildEiaUrl(path, params){
-  let qs = `api_key=${API_KEY}`;
-  for(const [k,v] of Object.entries(params)){
-    // keys like "data[0]", "facets[series][]", "sort[0][column]" must stay literal
-    qs += `&${k}=${encodeURIComponent(v)}`;
-  }
-  return `https://api.eia.gov/v2/${path}?${qs}`;
+// ── EIA FETCH ─────────────────────────────────────────────────────────────────
+function buildQS(params){
+  return Object.entries(params).map(([k,v])=>`${k}=${encodeURIComponent(v)}`).join('&');
 }
 
-async function fetchEIA(path, params, valueKey){
-  incApiCount();
-  const url = buildEiaUrl(path, params);
+async function fetchEIA(path, params, valueKey='value'){
+  incAPI();
+  const qs = buildQS({api_key:API_KEY, ...params});
+  const url = `https://api.eia.gov/v2/${path}?${qs}`;
   let res, json;
-  try {
-    res = await fetch(url);
-  } catch(e) {
-    throw new Error(`Network error: ${e.message}`);
-  }
-  try {
-    json = await res.json();
-  } catch(e) {
-    throw new Error(`Invalid JSON response (HTTP ${res.status})`);
-  }
-  if(!res.ok || json.response?.error){
-    const detail = json.response?.error || json.error || `HTTP ${res.status}`;
-    throw new Error(`EIA error: ${detail}\nURL: ${url}`);
-  }
-  const rows = json.response?.data || [];
-  if(!rows.length) throw new Error(`No data returned.\nURL: ${url}`);
-  return rows.map(row=>({
-    date: row.period,
-    value: parseFloat(row[valueKey] ?? row.value)
-  })).filter(d=>!isNaN(d.value));
+  try { res = await fetch(url); } catch(e){ throw new Error(`Network: ${e.message}`); }
+  try { json = await res.json(); } catch(e){ throw new Error(`Bad JSON (HTTP ${res.status})`); }
+  if(!res.ok||json.response?.error) throw new Error(`EIA: ${json.response?.error||res.status}\n${url}`);
+  const rows = json.response?.data||[];
+  if(!rows.length) throw new Error(`No data returned\n${url}`);
+  return rows.map(r=>({date:r.period, value:parseFloat(r[valueKey])})).filter(d=>!isNaN(d.value));
 }
 
-// ── EIA v2 /seriesid/ translator (for series without direct v2 path) ──────────
 async function fetchSeriesId(seriesId){
-  incApiCount();
-  // v2 seriesid route: translates v1-style IDs → returns v2-formatted data
-  let qs = `api_key=${API_KEY}&data[0]=value&sort[0][column]=period&sort[0][direction]=asc&length=1000`;
+  incAPI();
+  const qs = buildQS({'api_key':API_KEY,'data[0]':'value','sort[0][column]':'period','sort[0][direction]':'asc','length':'2000'});
   const url = `https://api.eia.gov/v2/seriesid/${seriesId}?${qs}`;
   let res, json;
-  try { res = await fetch(url); } catch(e) { throw new Error(`Network error: ${e.message}`); }
-  try { json = await res.json(); } catch(e) { throw new Error(`Invalid JSON (HTTP ${res.status})`); }
-  if(!res.ok || json.response?.error) throw new Error(`EIA seriesid error: ${json.response?.error || res.status}\nURL: ${url}`);
-  const rows = json.response?.data || [];
-  if(!rows.length) throw new Error(`No data for seriesid ${seriesId}`);
-  return rows.map(row => ({
-    date: row.period.length === 6
-      ? `${row.period.slice(0,4)}-${row.period.slice(4,6)}`
-      : row.period,
-    value: parseFloat(row.value)
-  })).filter(d => !isNaN(d.value));
+  try { res = await fetch(url); } catch(e){ throw new Error(`Network: ${e.message}`); }
+  try { json = await res.json(); } catch(e){ throw new Error(`Bad JSON (HTTP ${res.status})`); }
+  if(!res.ok||json.response?.error) throw new Error(`EIA seriesid: ${json.response?.error||res.status}\n${url}`);
+  const rows = json.response?.data||[];
+  if(!rows.length) throw new Error(`No data for ${seriesId}`);
+  // normalize period: YYYYMMDD → YYYY-MM-DD
+  return rows.map(r=>{
+    let d = r.period;
+    if(d.length===8) d=`${d.slice(0,4)}-${d.slice(4,6)}-${d.slice(6,8)}`;
+    return {date:d, value:parseFloat(r.value)};
+  }).filter(d=>!isNaN(d.value)).sort((a,b)=>a.date.localeCompare(b.date));
 }
 
-// ── LOAD ALL DATA ─────────────────────────────────────────────────────────────
+// ── LOAD ALL ──────────────────────────────────────────────────────────────────
 async function loadAll(){
   setDot('loading'); setBadge('loading','Loading…');
-  document.getElementById('upd-lbl').textContent='Fetching from EIA…';
-  hideErr();
-  resetSpinners();
+  document.getElementById('upd-lbl').textContent='Fetching…';
+  hideErr(); resetSpinners();
 
   try {
-    // 1. Weekly storage — Lower 48 — series NW2_EPG0_SWO_R48_BCF
-    const storageData = await fetchEIA(
+    // 1. Storage weekly
+    const storageRaw = await fetchEIA(
       'natural-gas/stor/wkly/data',
-      {
-        'frequency':           'weekly',
-        'data[0]':             'value',
-        'facets[series][]':    'NW2_EPG0_SWO_R48_BCF',
-        'sort[0][column]':     'period',
-        'sort[0][direction]':  'asc',
-        'length':              '1000'
-      },
+      {'frequency':'weekly','data[0]':'value','facets[series][]':'NW2_EPG0_SWO_R48_BCF',
+       'sort[0][column]':'period','sort[0][direction]':'asc','length':'1000'},
       'value'
     );
+    DATA.storage = storageRaw.sort((a,b)=>a.date.localeCompare(b.date));
 
-    // 2. Dry gas production — series N9070US2
-    const prodData = await fetchEIA(
-      'natural-gas/prod/sum/data',
-      {
-        'frequency':           'monthly',
-        'data[0]':             'value',
-        'facets[series][]':    'N9070US2',
-        'sort[0][column]':     'period',
-        'sort[0][direction]':  'asc',
-        'length':              '1000'
-      },
-      'value'
-    );
+    // 2. Futures RNGC1–RNGC5 — daily via natural-gas/pri/fut/data
+    const futKeys = ['RNGC1','RNGC2','RNGC3','RNGC4','RNGC5'];
+    const futResults = await Promise.all(futKeys.map(k =>
+      fetchEIA(
+        'natural-gas/pri/fut/data',
+        {'frequency':'daily','data[0]':'value','facets[series][]':k,
+         'sort[0][column]':'period','sort[0][direction]':'asc','length':'2000'},
+        'value'
+      ).then(rows => rows.sort((a,b)=>a.date.localeCompare(b.date)))
+       .catch(()=>[])
+    ));
+    futKeys.forEach((k,i)=>{ DATA.fut[k]=futResults[i]; });
 
-    // 3. LNG exports — via v2 seriesid translator (lngexp path not valid in v2)
-    const lngData = await fetchSeriesId('NG.N9133US2.M');
-
-    DATA.storage = storageData.sort((a,b) => a.date.localeCompare(b.date));
-    DATA.prod    = prodData.map(d => ({...d, value: d.value / 1000}))
-                           .sort((a,b) => a.date.localeCompare(b.date));
-    DATA.lng     = lngData.map(d => ({...d, value: d.value / 1000}))
-                          .sort((a,b) => a.date.localeCompare(b.date));
+    // 3. Rig count — Baker Hughes natural gas rigs via EIA seriesid
+    // NG.RNGR90_NUS_RIG.W = U.S. natural gas rotary rigs in operation, weekly
+    const rigsRaw = await fetchSeriesId('NG.RNGR90_NUS_RIG.W');
+    DATA.rigs = rigsRaw;
 
     renderAll();
     setDot('ok'); setBadge('live','Live data');
     document.getElementById('upd-lbl').textContent =
       new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-
-  } catch(e) {
+  } catch(e){
     setDot('err'); setBadge('err','Error');
-    document.getElementById('upd-lbl').textContent = 'Error — see below';
-    ['spin-stor','spin-prod','spin-lng'].forEach(id=>{
+    document.getElementById('upd-lbl').textContent='Error — see below';
+    ['spin-stor','spin-fut','spin-rig'].forEach(id=>{
       document.getElementById(id).innerHTML=`<span style="color:var(--red)">⚠ ${e.message.split('\n')[0]}</span>`;
     });
     showErr(e.message);
@@ -398,52 +418,67 @@ async function loadAll(){
   }
 }
 
+// ── RENDER ALL ────────────────────────────────────────────────────────────────
+function renderAll(){
+  if(DATA.storage.length) renderStorageChart();
+  if(Object.keys(DATA.fut).length) { renderFutChart(); renderFutTable(); }
+  if(DATA.rigs.length) { renderRigChart(); renderRigStats(); }
+  computeBias();
+  updateSubtitles();
+}
+
+function updateSubtitles(){
+  const m={'2y':'2-year','1y':'1-year','ytd':'YTD','3m':'3-month','1m':'1-month'};
+  const w = m[currentWindow]||currentWindow;
+  document.getElementById('stor-sub').textContent=`Weekly · Bcf · ${w} history vs 5-year range`;
+  document.getElementById('fut-sub').textContent=`Front month (RNGC1) daily · $/MMBtu · ${w} history vs 5-year range`;
+  document.getElementById('rig-sub').textContent=`Weekly · Rigs · ${w} history vs 5-year range`;
+}
+
 // ── BIAS ──────────────────────────────────────────────────────────────────────
 function computeBias(){
-  if(!DATA.storage.length||!DATA.prod.length||!DATA.lng.length)return;
+  if(!DATA.storage.length||!DATA.rigs.length) return;
 
-  const storL=DATA.storage[DATA.storage.length-1];
-  const s5=compute5y(DATA.storage,[storL.date]);
-  const storAvg=s5.avgs[0];
-  const storDevBcf=storAvg?storL.value-storAvg:0;
-  const storDevPct=storAvg?(storDevBcf/storAvg*100):0;
-  const storAnom=clamp(-storDevPct/10,-3,3);
+  // Storage
+  const storL = DATA.storage[DATA.storage.length-1];
+  const s5 = compute5y(DATA.storage,[storL.date],true);
+  const storAvg = s5.avgs[0];
+  const storDevBcf = storAvg ? storL.value-storAvg : 0;
+  const storDevPct = storAvg ? (storDevBcf/storAvg*100) : 0;
+  const storAnom = clamp(-storDevPct/10,-3,3); // bearish if high storage
 
-  const prodL=DATA.prod[DATA.prod.length-1];
-  const p5=compute5y(DATA.prod,[prodL.date]);
-  const prodAvg=p5.avgs[0];
-  const prodDevPct=prodAvg?((prodL.value-prodAvg)/prodAvg*100):0;
-  const prodAnom=clamp(-prodDevPct/5,-3,3);
+  // Rigs
+  const rigL = DATA.rigs[DATA.rigs.length-1];
+  const r5 = compute5y(DATA.rigs,[rigL.date],true);
+  const rigAvg = r5.avgs[0];
+  const rigDevPct = rigAvg ? ((rigL.value-rigAvg)/rigAvg*100) : 0;
+  const rigAnom = clamp(-rigDevPct/10,-3,3); // bearish if many rigs (more supply)
 
-  const lngL=DATA.lng[DATA.lng.length-1];
-  const l5=compute5y(DATA.lng,[lngL.date]);
-  const lngAvg=l5.avgs[0];
-  const lngDevPct=lngAvg?((lngL.value-lngAvg)/lngAvg*100):0;
-  const lngAnom=clamp(lngDevPct/10,-3,3);
+  const cStor = storAnom*WEIGHTS.stor;
+  const cRig  = rigAnom*WEIGHTS.rig;
+  const score = clamp(cStor+cRig,-5,5);
 
-  const cStor=storAnom*WEIGHTS.stor,cProd=prodAnom*WEIGHTS.prod,cLng=lngAnom*WEIGHTS.lng;
-  const score=clamp(cStor+cProd+cLng,-5,5);
-
+  // Update metric boxes
   function setM(vi,si,val,sub,col){
-    const e=document.getElementById(vi);e.textContent=val;e.style.color=col;
-    if(si)document.getElementById(si).textContent=sub;
+    const e=document.getElementById(vi); e.textContent=val; e.style.color=col;
+    if(si) document.getElementById(si).textContent=sub;
   }
-  const sCol=Math.abs(storDevPct)<3?'var(--yellow)':storDevBcf<0?'var(--green)':'var(--red)';
-  setM('m-stor-val','m-stor-sub',fmtBcf(storL.value),`Bcf · ${storL.date}`,'var(--text)');
-  setM('m-stor-dev','m-stor-dev-sub',(storDevBcf>=0?'+':'')+fmtBcf(storDevBcf)+' Bcf',fmtPct(storDevPct)+' vs 5y avg',sCol);
-  const pCol=Math.abs(prodDevPct)<2?'var(--yellow)':prodDevPct>0?'var(--red)':'var(--green)';
-  setM('m-prod-val','m-prod-sub',fmtBcf(prodL.value),`Bcf · ${prodL.date}`,'var(--text)');
-  setM('m-prod-dev','m-prod-dev-sub',fmtPct(prodDevPct),'vs 5y avg',pCol);
-  const lCol=Math.abs(lngDevPct)<3?'var(--yellow)':lngDevPct>0?'var(--green)':'var(--red)';
-  setM('m-lng-val','m-lng-sub',fmtBcf(lngL.value),`Bcf · ${lngL.date}`,'var(--text)');
-  setM('m-lng-dev','m-lng-dev-sub',fmtPct(lngDevPct),'vs 5y avg',lCol);
+  const sCol = Math.abs(storDevPct)<3?'var(--yellow)':storDevBcf<0?'var(--green)':'var(--red)';
+  setM('m-stor-val','m-stor-sub',Math.round(storL.value).toLocaleString(),`Bcf · ${storL.date}`,'var(--text)');
+  setM('m-stor-dev','m-stor-dev-sub',(storDevBcf>=0?'+':'')+Math.round(storDevBcf).toLocaleString()+' Bcf',fmtPct(storDevPct)+' vs 5y avg',sCol);
 
-  const{w,cls}=biasLabel(score);
-  const bw=document.getElementById('bias-word');bw.textContent=w;bw.className='bias-word '+cls;
+  const rCol = Math.abs(rigDevPct)<5?'var(--yellow)':rigDevPct>0?'var(--red)':'var(--green)';
+  setM('m-rig-val','m-rig-sub',Math.round(rigL.value).toString(),`rigs · ${rigL.date}`,'var(--text)');
+  setM('m-rig-dev','m-rig-dev-sub',fmtPct(rigDevPct),'vs 5y avg',rCol);
+
+  // Bias label & bar
+  const {w,cls} = biasLabel(score);
+  const bw = document.getElementById('bias-word'); bw.textContent=w; bw.className='bias-word '+cls;
   document.getElementById('bias-fill').style.width=((score+5)/10*100).toFixed(1)+'%';
   document.getElementById('bias-fill').style.background=score>0.8?'var(--green)':score<-0.8?'var(--red)':'var(--yellow)';
   document.getElementById('bias-score-num').textContent=(score>=0?'+':'')+score.toFixed(3);
 
+  // Scale
   const SCALE=[{l:'BEARISH',c:'bear'},{l:'SL. BEARISH',c:'sbear'},{l:'NEUTRAL',c:'neut'},{l:'SL. BULLISH',c:'sbull'},{l:'BULLISH',c:'bull'}];
   const cols={bull:'var(--green)',sbull:'#7ed49a',neut:'var(--yellow)',sbear:'#ffaa99',bear:'var(--red)'};
   const ai=score>2.5?4:score>0.8?3:score>=-0.8?2:score>=-2.5?1:0;
@@ -452,29 +487,39 @@ function computeBias(){
     return`<div style="flex:1;text-align:center;padding:4px 2px;border-radius:4px;font-size:9px;font-weight:${a?700:400};font-family:var(--mono);border:1px solid ${a?col:'var(--border2)'};background:${a?col+'22':'transparent'};color:${a?col:'var(--text3)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${it.l}</div>`;
   }).join('');
 
+  // Breakdown rows
   function sRow(label,anom,weight,contrib,total){
-    if(total){const tc=score>0.8?'var(--green)':score<-0.8?'var(--red)':'var(--yellow)';return`<span class="score-total-label">${label}</span><span style="flex:1"></span><span class="score-total-val" style="color:${tc}">${(score>=0?'+':'')+score.toFixed(3)}</span>`;}
+    if(total){
+      const tc=score>0.8?'var(--green)':score<-0.8?'var(--red)':'var(--yellow)';
+      return`<span class="score-total-label">${label}</span><span style="flex:1"></span><span class="score-total-val" style="color:${tc}">${(score>=0?'+':'')+score.toFixed(3)}</span>`;
+    }
     const col=contrib>0.001?'var(--green)':contrib<-0.001?'var(--red)':'var(--yellow)';
     const bp=clamp(((contrib+2)/4)*100,0,100).toFixed(1);
     return`<span class="score-row-label">${label}</span><span class="score-row-anom" style="color:${col}">${sgn(anom)}${anom.toFixed(2)}</span><span class="score-row-eq">×</span><span class="score-row-wt">${weight.toFixed(2)}</span><span class="score-row-eq">=</span><div class="score-row-bar"><div class="score-row-fill" style="width:${bp}%;background:${col}"></div></div><span class="score-row-val" style="color:${col}">${sgn(contrib)}${contrib.toFixed(3)}</span>`;
   }
   document.getElementById('sm-stor').innerHTML=sRow('Storage vs 5y avg (inv.)',storAnom,WEIGHTS.stor,cStor);
-  document.getElementById('sm-prod').innerHTML=sRow('Production vs 5y avg (inv.)',prodAnom,WEIGHTS.prod,cProd);
-  document.getElementById('sm-lng').innerHTML=sRow('LNG exports vs 5y avg',lngAnom,WEIGHTS.lng,cLng);
+  document.getElementById('sm-rig').innerHTML=sRow('Rig count vs 5y avg (inv.)',rigAnom,WEIGHTS.rig,cRig);
   document.getElementById('sm-total').innerHTML=sRow('Total score (clipped ±5)',0,0,0,true);
 }
+
 function biasLabel(s){
-  if(s>2.5)return{w:'BULLISH',cls:'bull'};if(s>0.8)return{w:'SL. BULLISH',cls:'sbull'};
-  if(s<-2.5)return{w:'BEARISH',cls:'bear'};if(s<-0.8)return{w:'SL. BEARISH',cls:'sbear'};
+  if(s>2.5) return{w:'BULLISH',cls:'bull'}; if(s>0.8) return{w:'SL. BULLISH',cls:'sbull'};
+  if(s<-2.5) return{w:'BEARISH',cls:'bear'}; if(s<-0.8) return{w:'SL. BEARISH',cls:'sbear'};
   return{w:'NEUTRAL',cls:'neut'};
 }
 
 // ── CHARTS ────────────────────────────────────────────────────────────────────
-function gBase(){
-  return{responsive:true,maintainAspectRatio:false,animation:{duration:300},
+function gBase(yFmt){
+  return{
+    responsive:true, maintainAspectRatio:false, animation:{duration:300},
     plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2128',titleColor:'#e6edf3',bodyColor:'#8b949e',borderColor:'#30363d',borderWidth:1,padding:10,titleFont:{family:'Inter',size:11},bodyFont:{family:'Inter',size:11}}},
-    scales:{x:{grid:{color:'rgba(33,38,45,0.8)'},ticks:{color:'#6e7681',font:{family:'Inter',size:9},maxRotation:45,autoSkip:true,maxTicksLimit:16}},y:{grid:{color:'rgba(33,38,45,0.8)'},ticks:{color:'#6e7681',font:{family:'Inter',size:9},callback:v=>Math.round(v).toLocaleString()}}}};
+    scales:{
+      x:{grid:{color:'rgba(33,38,45,0.8)'},ticks:{color:'#6e7681',font:{family:'Inter',size:9},maxRotation:45,autoSkip:true,maxTicksLimit:16}},
+      y:{grid:{color:'rgba(33,38,45,0.8)'},ticks:{color:'#6e7681',font:{family:'Inter',size:9},callback:yFmt||((v)=>Math.round(v).toLocaleString())}}
+    }
+  };
 }
+
 function makeBandPlugin(pid,color){
   return{id:pid,beforeDatasetsDraw(chart){
     const{ctx,scales:{x,y}}=chart;
@@ -487,18 +532,19 @@ function makeBandPlugin(pid,color){
     ctx.closePath();ctx.fillStyle=color;ctx.fill();ctx.restore();
   }};
 }
-function drawChart(key,spinId,wrapId,canvasId,series,color,bandColor,isWeekly){
-  const filtered=filterByWindow(series);if(!filtered.length)return;
-  const{avgs,mins,maxs}=compute5y(series,filtered.map(d=>d.date));
-  const labels=filtered.map(d=>isWeekly?shortDate(d.date):shortMonth(d.date));
+
+function drawLineChart(key,spinId,wrapId,canvasId,series,color,bandColor,labelFn,ttFmt,yFmt){
+  const filtered=filterByWindow(series); if(!filtered.length)return;
+  const{avgs,mins,maxs}=compute5y(series,filtered.map(d=>d.date),true);
+  const labels=filtered.map(d=>labelFn(d.date));
   const values=filtered.map(d=>d.value);
   document.getElementById(spinId).style.display='none';
   document.getElementById(wrapId).style.display='block';
   if(charts[key]){charts[key].destroy();charts[key]=null;}
-  const opts=gBase();
+  const opts=gBase(yFmt);
   opts.plugins.tooltip.callbacks={
-    label(c){if(['min','max'].includes(c.dataset._key))return null;return` ${c.dataset.label}: ${fmtBcf(c.parsed.y)} Bcf`;},
-    afterBody(items){const i=items[0]?.dataIndex;if(i==null||mins[i]==null||maxs[i]==null)return[];return[`5y range: ${fmtBcf(mins[i])} – ${fmtBcf(maxs[i])} Bcf`];}
+    label(c){if(['min','max'].includes(c.dataset._key))return null;return` ${c.dataset.label}: ${ttFmt(c.parsed.y)}`;},
+    afterBody(items){const i=items[0]?.dataIndex;if(i==null||mins[i]==null)return[];return[`5y range: ${ttFmt(mins[i])} – ${ttFmt(maxs[i])}`];}
   };
   opts.plugins.tooltip.filter=item=>!['min','max'].includes(item.dataset._key);
   const ctx=document.getElementById(canvasId).getContext('2d');
@@ -514,36 +560,93 @@ function drawChart(key,spinId,wrapId,canvasId,series,color,bandColor,isWeekly){
   });
 }
 
-function renderAll(){
-  if(DATA.storage.length) drawChart('stor','spin-stor','wrap-stor','c-stor',DATA.storage,'#4493f8','rgba(68,147,248,0.09)',true);
-  if(DATA.prod.length)    drawChart('prod','spin-prod','wrap-prod','c-prod',DATA.prod,   '#3fb950','rgba(63,185,80,0.08)', false);
-  if(DATA.lng.length)     drawChart('lng', 'spin-lng', 'wrap-lng', 'c-lng', DATA.lng,    '#f0883e','rgba(240,136,62,0.09)',false);
-  computeBias();
-  updateSubtitles();
+function renderStorageChart(){
+  drawLineChart('stor','spin-stor','wrap-stor','c-stor',DATA.storage,'#4493f8','rgba(68,147,248,0.09)',
+    d=>fmtDateShort(d), v=>`${Math.round(v).toLocaleString()} Bcf`);
 }
-function updateSubtitles(){
-  const m={'2y':'2-year','1y':'1-year','ytd':'YTD','3m':'3-month','1m':'1-month'};
-  const w=m[currentWindow]||currentWindow;
-  ['stor-sub','prod-sub','lng-sub'].forEach((id,i)=>{
-    const freq=['Weekly','Monthly','Monthly'][i];
-    document.getElementById(id).textContent=`${freq} · Bcf · ${w} history vs 5-year range`;
-  });
+
+function renderFutChart(){
+  const series = DATA.fut['RNGC1']||[];
+  if(!series.length) return;
+  drawLineChart('fut','spin-fut','wrap-fut','c-fut',series,'#e3b341','rgba(227,179,65,0.09)',
+    d=>fmtDateShort(d), v=>`$${v.toFixed(3)}/MMBtu`, v=>v.toFixed(2));
 }
+
+function renderRigChart(){
+  drawLineChart('rig','spin-rig','wrap-rig','c-rig',DATA.rigs,'#a371f7','rgba(163,113,247,0.09)',
+    d=>fmtDateShort(d), v=>`${Math.round(v)} rigs`);
+}
+
+// ── FUTURES TABLE ─────────────────────────────────────────────────────────────
+function renderFutTable(){
+  const contractMonths = getFutureContractMonths(); // [{year,month},...]
+  const keys = ['RNGC1','RNGC2','RNGC3','RNGC4','RNGC5'];
+  const grid = document.getElementById('fut-grid');
+  grid.innerHTML = keys.map((k,i)=>{
+    const series = DATA.fut[k]||[];
+    const latest = series[series.length-1];
+    const prev   = series[series.length-2];
+    const price  = latest ? latest.value : null;
+    const chg    = (latest&&prev) ? latest.value-prev.value : null;
+    const cm     = contractMonths[i];
+    const label  = cm ? monthLabel(cm.year,cm.month) : `Contract ${i+1}`;
+    const isFront = i===0;
+    const priceStr = price!==null ? `$${price.toFixed(3)}` : '—';
+    const chgStr = chg!==null
+      ? `<span class="fut-chg" style="color:${chg>=0?'var(--green)':'var(--red)'}">${chg>=0?'+':''}${chg.toFixed(3)} $/MMBtu</span>`
+      : '';
+    return`<div class="fut-box${isFront?' front':''}">
+      <div class="fut-label">${isFront?'Front Month':'Contract '+(i+1)}</div>
+      <div class="fut-month">${label}</div>
+      <div class="fut-price">${priceStr}</div>
+      ${chgStr}
+      <div style="font-size:9px;color:var(--text3);margin-top:3px;font-family:var(--mono)">${latest?latest.date:''}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── RIG STATS ─────────────────────────────────────────────────────────────────
+function renderRigStats(){
+  if(!DATA.rigs.length) return;
+  const latest = DATA.rigs[DATA.rigs.length-1];
+  const r5 = compute5y(DATA.rigs,[latest.date],true);
+  const avg = r5.avgs[0];
+  const devPct = avg ? ((latest.value-avg)/avg*100) : null;
+
+  // 52w high/low
+  const cutoff = new Date(); cutoff.setFullYear(cutoff.getFullYear()-1);
+  const yr = DATA.rigs.filter(d=>parseDate(d.date)>=cutoff);
+  const hi = yr.length ? Math.max(...yr.map(d=>d.value)) : null;
+  const lo = yr.length ? Math.min(...yr.map(d=>d.value)) : null;
+
+  document.getElementById('rig-cur').textContent = Math.round(latest.value);
+  document.getElementById('rig-cur-dt').textContent = latest.date;
+  document.getElementById('rig-avg').textContent = avg ? Math.round(avg) : '—';
+  document.getElementById('rig-vs').textContent = devPct!==null ? fmtPct(devPct) : '—';
+  document.getElementById('rig-vs').style.color = devPct!==null
+    ? (Math.abs(devPct)<5?'var(--yellow)':devPct>0?'var(--red)':'var(--green)') : 'var(--text)';
+  document.getElementById('rig-hi').textContent = hi!==null ? Math.round(hi) : '—';
+  document.getElementById('rig-lo').textContent = lo!==null ? Math.round(lo) : '—';
+  document.getElementById('rigs-meta').style.display='flex';
+}
+
+// ── WINDOW / MISC ─────────────────────────────────────────────────────────────
 function setWindow(w){
-  if(currentWindow===w)return;currentWindow=w;
+  if(currentWindow===w)return; currentWindow=w;
   Object.keys(TW).forEach(k=>document.getElementById('tw-'+k).classList.toggle('on',k===w));
   renderAll();
 }
 function resetSpinners(){
-  ['wrap-stor','wrap-prod','wrap-lng'].forEach(id=>document.getElementById(id).style.display='none');
-  ['spin-stor','spin-prod','spin-lng'].forEach(id=>{
+  ['wrap-stor','wrap-fut','wrap-rig'].forEach(id=>document.getElementById(id).style.display='none');
+  ['spin-stor','spin-fut','spin-rig'].forEach(id=>{
     document.getElementById(id).style.display='block';
     document.getElementById(id).innerHTML='<span class="sp"></span>Loading…';
   });
+  document.getElementById('rigs-meta').style.display='none';
 }
 function toggleAccordion(){
   const body=document.getElementById('accordion-body'),arrow=document.getElementById('accordion-arrow');
-  const open=body.style.display==='none';body.style.display=open?'block':'none';
+  const open=body.style.display==='none'; body.style.display=open?'block':'none';
   arrow.style.transform=open?'rotate(90deg)':'rotate(0deg)';
 }
 
