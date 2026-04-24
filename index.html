@@ -317,6 +317,25 @@ async function fetchEIA(path, params, valueKey){
   })).filter(d=>!isNaN(d.value));
 }
 
+// ── EIA v1 FALLBACK (for series without valid v2 path) ────────────────────────
+async function fetchV1Series(seriesId){
+  incApiCount();
+  const url = `https://api.eia.gov/series/?api_key=${API_KEY}&series_id=${seriesId}&out=json`;
+  let res, json;
+  try { res = await fetch(url); } catch(e) { throw new Error(`Network error: ${e.message}`); }
+  try { json = await res.json(); } catch(e) { throw new Error(`Invalid JSON (HTTP ${res.status})`); }
+  if(json.data?.error) throw new Error(`EIA v1 error: ${json.data.error}`);
+  const series = json.series?.[0];
+  if(!series) throw new Error(`No series data for ${seriesId}`);
+  // v1 data is [[period, value], ...] newest-first → reverse
+  return series.data.slice().reverse().map(([period, val]) => ({
+    date: period.length === 6
+      ? `${period.slice(0,4)}-${period.slice(4,6)}`
+      : period,
+    value: parseFloat(val)
+  })).filter(d => !isNaN(d.value));
+}
+
 // ── LOAD ALL DATA ─────────────────────────────────────────────────────────────
 async function loadAll(){
   setDot('loading'); setBadge('loading','Loading…');
@@ -353,19 +372,8 @@ async function loadAll(){
       'value'
     );
 
-    // 3. LNG exports — series N9133US2
-    const lngData = await fetchEIA(
-      'natural-gas/move/lngexp/data',
-      {
-        'frequency':           'monthly',
-        'data[0]':             'value',
-        'facets[series][]':    'N9133US2',
-        'sort[0][column]':     'period',
-        'sort[0][direction]':  'asc',
-        'length':              '1000'
-      },
-      'value'
-    );
+    // 3. LNG exports — via v1 series API (v2 path for lngexp no longer valid)
+    const lngData = await fetchV1Series('NG.N9133US2.M');
 
     DATA.storage = storageData;
     DATA.prod    = prodData;
