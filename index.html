@@ -333,35 +333,57 @@ async function fetchStorage(){
 // ── YAHOO FINANCE FETCH ───────────────────────────────────────────────────────
 async function fetchNGF(){
   incAPI();
-  // period1 = 2010-01-01 unix, period2 = now, interval = 1wk
   const period1 = Math.floor(new Date('2010-01-01').getTime()/1000);
   const period2 = Math.floor(Date.now()/1000);
-  const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/NG=F?period1=${period1}&period2=${period2}&interval=1wk&events=history`;
-  // Use allorigins CORS proxy
-  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooUrl)}`;
-  let res, json;
-  try{ res=await fetch(proxyUrl); } catch(e){ throw new Error(`NGF network: ${e.message}`); }
-  try{ json=await res.json(); }    catch(e){ throw new Error(`NGF bad JSON`); }
+  const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/NG%3DF?period1=${period1}&period2=${period2}&interval=1wk&events=history&lang=en-US&region=US`;
 
-  let data;
-  try{ data=JSON.parse(json.contents); } catch(e){ throw new Error(`NGF parse error: ${json.contents?.slice(0,200)}`); }
+  // Try multiple proxies in sequence
+  const proxies = [
+    url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+    url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    url => `https://proxy.cors.sh/${url}`,
+  ];
 
-  const result=data?.chart?.result?.[0];
-  if(!result) throw new Error(`NGF: no result in Yahoo response`);
-
-  const timestamps  = result.timestamp;
-  const q           = result.indicators?.quote?.[0];
-  if(!timestamps||!q) throw new Error(`NGF: missing timestamps or quotes`);
-
-  return timestamps.map((ts,i)=>({
-    ts:  ts*1000,
-    date: new Date(ts*1000).toISOString().slice(0,10),
-    open:  parseFloat(q.open?.[i]),
-    high:  parseFloat(q.high?.[i]),
-    low:   parseFloat(q.low?.[i]),
-    close: parseFloat(q.close?.[i]),
-  })).filter(d=>isFinite(d.close)&&isFinite(d.open)&&isFinite(d.high)&&isFinite(d.low))
-     .sort((a,b)=>a.ts-b.ts);
+  let lastErr = null;
+  for(const makeProxy of proxies){
+    try{
+      const proxyUrl = makeProxy(yahooUrl);
+      const res = await fetch(proxyUrl, {
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        }
+      });
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); }
+      catch(e){
+        // allorigins wraps in {contents:'...'}
+        const wrapper = JSON.parse(text);
+        data = JSON.parse(wrapper.contents);
+      }
+      const result = data?.chart?.result?.[0];
+      if(!result) throw new Error('No result in Yahoo response');
+      const timestamps = result.timestamp;
+      const q = result.indicators?.quote?.[0];
+      if(!timestamps || !q) throw new Error('Missing timestamps or quotes');
+      return timestamps.map((ts,i) => ({
+        ts:   ts * 1000,
+        date: new Date(ts*1000).toISOString().slice(0,10),
+        open:  parseFloat(q.open?.[i]),
+        high:  parseFloat(q.high?.[i]),
+        low:   parseFloat(q.low?.[i]),
+        close: parseFloat(q.close?.[i]),
+      }))
+      .filter(d => isFinite(d.close) && isFinite(d.open) && isFinite(d.high) && isFinite(d.low))
+      .sort((a,b) => a.ts - b.ts);
+    } catch(e){
+      lastErr = e;
+      // try next proxy
+    }
+  }
+  throw new Error(`NGF fetch failed (all proxies): ${lastErr?.message}`);
 }
 
 // ── LOAD ALL ──────────────────────────────────────────────────────────────────
