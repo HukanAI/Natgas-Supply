@@ -3,21 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NatGas Fundamentals Dashboard</title>
+<title>NatGas Storage Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.1.1/dist/chartjs-chart-financial.min.js"></script>
 <style>
 :root{
   --bg:#0d1117;--bg2:#161b22;--bg3:#1c2128;--bg4:#21262d;
   --border:#21262d;--border2:#30363d;
   --text:#e6edf3;--text2:#8b949e;--text3:#6e7681;
-  --blue:#4493f8;--orange:#f0883e;--red:#ff7b72;--green:#3fb950;
-  --yellow:#e3b341;--purple:#a371f7;
+  --blue:#4493f8;--red:#ff7b72;--green:#3fb950;--yellow:#e3b341;
   --font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px;min-height:100vh;font-size:13px;line-height:1.5}
-/* HEADER */
 .hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
 .hdr-l h1{font-size:13px;font-weight:600;color:var(--blue);letter-spacing:.5px;margin-bottom:2px}
 .hdr-l .sub{font-size:11px;color:var(--text2)}
@@ -26,6 +25,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
 .btn{background:var(--bg2);border:1px solid var(--border2);color:var(--text2);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:11px;font-family:var(--font);font-weight:500;transition:all .15s}
 .btn:hover{border-color:var(--blue);color:var(--blue)}
 .btn.primary{background:#1f3a6e;border-color:var(--blue);color:var(--blue)}
+.btn.primary:hover{background:#2a4d8f}
 .dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
 .dot.ok{background:var(--green);animation:pulse 2s infinite}
 .dot.err{background:var(--red)}
@@ -36,83 +36,70 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
 .badge-loading{background:rgba(68,147,248,.1);color:var(--blue);border-color:rgba(68,147,248,.3)}
 .badge-err{background:rgba(255,123,114,.1);color:var(--red);border-color:rgba(255,123,114,.3)}
 .api-counter{font-size:10px;font-family:var(--mono);padding:3px 8px;border-radius:4px;background:var(--bg3);border:1px solid var(--border2);color:var(--text2)}
-/* TIME WINDOW */
 .tw-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
 .tw-label{font-size:10px;color:var(--text2);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
 .tw-btn{background:var(--bg2);border:1px solid var(--border2);color:var(--text2);padding:4px 9px;border-radius:5px;cursor:pointer;font-size:11px;transition:all .15s}
 .tw-btn:hover{border-color:var(--blue);color:var(--blue)}
 .tw-btn.on{background:#1f3a6e;border-color:var(--blue);color:var(--blue)}
-/* BIAS CARD */
 .bias-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
 .section-label{font-size:10px;font-weight:600;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.metric-boxes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-@media(max-width:800px){.metric-boxes{grid-template-columns:repeat(2,1fr)}}
+.metric-boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+@media(max-width:600px){.metric-boxes{grid-template-columns:1fr}}
 .mbox{background:var(--bg3);border-radius:6px;padding:10px 12px;min-width:0}
 .mbox-lbl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
-.mbox-val{font-size:16px;font-weight:700;font-family:var(--mono);line-height:1.2;word-break:break-word}
+.mbox-val{font-size:18px;font-weight:700;font-family:var(--mono);line-height:1.2;word-break:break-word}
+.mbox-sm .mbox-val{font-size:15px}
 .mbox-sub{font-size:9px;color:var(--text2);margin-top:3px;line-height:1.4}
-.mbox-sm .mbox-val{font-size:13px}
-.bias-word{font-size:26px;font-weight:700;line-height:1;font-family:var(--mono);margin-bottom:6px}
+.bias-word{font-size:28px;font-weight:700;line-height:1;font-family:var(--mono);margin-bottom:6px}
 .bull{color:var(--green)}.bear{color:var(--red)}.sbull{color:#7ed49a}.sbear{color:#ffaa99}.neut{color:var(--yellow)}
 .bias-score-wrap{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .bias-score-bar{flex:1;height:5px;border-radius:3px;background:var(--bg4);overflow:hidden}
 .bias-score-fill{height:100%;border-radius:3px;transition:width .6s,background .6s}
-.bias-score-num{font-size:11px;font-family:var(--mono);color:var(--text2);min-width:36px;text-align:right}
-.accordion{border:1px solid var(--border2);border-radius:6px;overflow:hidden;margin-top:10px}
+.bias-score-num{font-size:11px;font-family:var(--mono);color:var(--text2);min-width:52px;text-align:right}
+.scale-row{display:flex;gap:4px;margin-bottom:10px}
+.accordion{border:1px solid var(--border2);border-radius:6px;overflow:hidden;margin-top:2px}
 .accordion-btn{width:100%;background:var(--bg3);border:none;color:var(--text2);padding:8px 12px;font-size:10px;font-family:var(--font);font-weight:600;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:color .15s}
 .accordion-btn:hover{color:var(--text)}
 .accordion-arrow{font-size:11px;transition:transform .25s;display:inline-block}
 .accordion-body{display:none;padding:10px;background:var(--bg3);border-top:1px solid var(--border2)}
-.score-method-title{font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.score-method{font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
 .score-row{display:flex;align-items:center;margin-bottom:5px;gap:6px}
 .score-row:last-child{margin-bottom:0;padding-top:5px;border-top:1px solid var(--border2)}
-.score-row-label{font-size:10px;color:var(--text2);flex:0 0 170px;white-space:nowrap}
-.score-row-bar{flex:1;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;min-width:30px}
-.score-row-fill{height:100%;border-radius:2px;transition:width .5s}
-.score-row-anom{font-size:10px;font-family:var(--mono);min-width:44px;text-align:right;color:var(--text3)}
-.score-row-eq{font-size:10px;font-family:var(--mono);min-width:10px;text-align:center;color:var(--text3)}
-.score-row-wt{font-size:10px;color:var(--text3);min-width:28px}
-.score-row-val{font-size:10px;font-family:var(--mono);min-width:44px;text-align:right;font-weight:600}
-.score-total-label{font-size:10px;font-weight:600;color:var(--text);flex:0 0 170px}
-.score-total-val{font-size:13px;font-family:var(--mono);font-weight:700;min-width:44px;text-align:right}
-/* CHART BLOCKS */
+.srl{font-size:10px;color:var(--text2);flex:0 0 180px;white-space:nowrap}
+.srbar{flex:1;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;min-width:30px}
+.srfill{height:100%;border-radius:2px;transition:width .5s}
+.sranom{font-size:10px;font-family:var(--mono);min-width:52px;text-align:right;color:var(--text3)}
+.sreq{font-size:10px;font-family:var(--mono);min-width:10px;text-align:center;color:var(--text3)}
+.srwt{font-size:10px;color:var(--text3);min-width:28px}
+.srval{font-size:10px;font-family:var(--mono);min-width:52px;text-align:right;font-weight:600}
+.srtl{font-size:10px;font-weight:600;color:var(--text);flex:0 0 180px}
+.srtv{font-size:14px;font-family:var(--mono);font-weight:700;min-width:52px;text-align:right}
 .block{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
 .bhead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:6px}
 .btitle{font-size:11px;font-weight:600;color:var(--text)}
 .bsub{font-size:10px;color:var(--text2);margin-top:2px}
+.bhead-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
 .li{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text2)}
 .ldr{width:16px;height:2.5px;border-radius:2px;flex-shrink:0}
-.ldband{width:20px;height:8px;border-radius:2px;flex-shrink:0}
+.ldband{width:14px;height:10px;border-radius:2px;flex-shrink:0;opacity:.7}
 .cw{position:relative;width:100%}
 .spin{text-align:center;padding:40px;color:var(--text2);font-size:12px}
 .sp{display:inline-block;width:14px;height:14px;border:2px solid var(--bg4);border-top-color:var(--blue);border-radius:50%;animation:spinkf .8s linear infinite;margin-right:6px;vertical-align:middle}
 @keyframes spinkf{to{transform:rotate(360deg)}}
-/* FUTURES TABLE */
-.fut-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
-@media(max-width:700px){.fut-grid{grid-template-columns:repeat(2,1fr)}}
-.fut-box{background:var(--bg3);border-radius:6px;padding:10px 12px;border-left:3px solid var(--border2);min-width:0}
-.fut-box.front{border-left-color:var(--blue)}
-.fut-month{font-size:10px;font-weight:600;color:var(--text2);letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px}
-.fut-price{font-size:20px;font-weight:700;font-family:var(--mono);color:var(--text);line-height:1;margin-bottom:3px}
-.fut-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px}
-.fut-chg{font-size:11px;font-family:var(--mono);margin-top:2px}
-/* RIGS TABLE */
-.rigs-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
-.rigs-stat{background:var(--bg3);border-radius:6px;padding:8px 12px;min-width:0}
-.rigs-stat-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px}
-.rigs-stat-val{font-size:18px;font-weight:700;font-family:var(--mono);color:var(--text)}
-.rigs-stat-sub{font-size:9px;color:var(--text2);margin-top:2px}
-/* ERROR */
-.err-detail{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:10px;margin-top:8px;font-size:11px;font-family:var(--mono);color:var(--text2);white-space:pre-wrap;word-break:break-all;max-height:120px;overflow-y:auto}
+.toggle-btn{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:3px 9px;border-radius:5px;cursor:pointer;font-size:10px;font-family:var(--font);transition:all .15s}
+.toggle-btn:hover{border-color:var(--blue);color:var(--blue)}
+.toggle-btn.on{background:#1f3a6e;border-color:var(--blue);color:var(--blue)}
+.err-block{background:var(--bg2);border:1px solid rgba(255,123,114,.3);border-radius:8px;padding:14px;margin-bottom:10px;display:none}
+.err-detail{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:10px;margin-top:8px;font-size:11px;font-family:var(--mono);color:var(--text2);white-space:pre-wrap;word-break:break-all;max-height:140px;overflow-y:auto}
 </style>
 </head>
 <body>
 
 <div class="hdr">
   <div class="hdr-l">
-    <h1>📦 NatGas Fundamentals Dashboard</h1>
-    <div class="sub">Storage · Futures · Rig Count · Lower 48</div>
+    <h1>📦 NatGas Storage Dashboard</h1>
+    <div class="sub">Natural Gas Storage · Lower 48 · Bcf · EIA Weekly · NG=F Yahoo Finance</div>
   </div>
   <div class="hdr-r">
     <span class="api-counter" id="api-counter">API calls: 0</span>
@@ -125,11 +112,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
 
 <div class="tw-bar">
   <span class="tw-label">History:</span>
-  <button class="tw-btn" id="tw-2y" onclick="setWindow('2y')">2 years</button>
-  <button class="tw-btn on" id="tw-1y" onclick="setWindow('1y')">1 year</button>
+  <button class="tw-btn on" id="tw-max" onclick="setWindow('max')">Max</button>
+  <button class="tw-btn" id="tw-5y"  onclick="setWindow('5y')">5 years</button>
+  <button class="tw-btn" id="tw-2y"  onclick="setWindow('2y')">2 years</button>
+  <button class="tw-btn" id="tw-1y"  onclick="setWindow('1y')">1 year</button>
   <button class="tw-btn" id="tw-ytd" onclick="setWindow('ytd')">YTD</button>
-  <button class="tw-btn" id="tw-3m" onclick="setWindow('3m')">3 months</button>
-  <button class="tw-btn" id="tw-1m" onclick="setWindow('1m')">1 month</button>
+  <button class="tw-btn" id="tw-3m"  onclick="setWindow('3m')">3 months</button>
+  <button class="tw-btn" id="tw-1m"  onclick="setWindow('1m')">1 month</button>
 </div>
 
 <!-- BIAS CARD -->
@@ -139,234 +128,240 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);padding:14px
     <div class="mbox mbox-sm">
       <div class="mbox-lbl">Storage Level</div>
       <div class="mbox-val" id="m-stor-val">—</div>
-      <div class="mbox-sub" id="m-stor-sub">Bcf, latest week</div>
+      <div class="mbox-sub" id="m-stor-sub">Bcf · latest week</div>
+    </div>
+    <div class="mbox mbox-sm">
+      <div class="mbox-lbl">5-Year Average</div>
+      <div class="mbox-val" id="m-stor-avg">—</div>
+      <div class="mbox-sub" id="m-stor-avg-sub">Bcf · same week avg</div>
     </div>
     <div class="mbox">
-      <div class="mbox-lbl">Storage vs 5Y Avg</div>
+      <div class="mbox-lbl">vs 5-Year Average</div>
       <div class="mbox-val" id="m-stor-dev">—</div>
       <div class="mbox-sub" id="m-stor-dev-sub">Bcf deviation</div>
-    </div>
-    <div class="mbox">
-      <div class="mbox-lbl">Rig Count</div>
-      <div class="mbox-val" id="m-rig-val">—</div>
-      <div class="mbox-sub" id="m-rig-sub">rigs, latest week</div>
-    </div>
-    <div class="mbox">
-      <div class="mbox-lbl">Rigs vs 5Y Avg</div>
-      <div class="mbox-val" id="m-rig-dev">—</div>
-      <div class="mbox-sub" id="m-rig-dev-sub">% deviation</div>
     </div>
   </div>
   <div class="bias-word neut" id="bias-word">—</div>
   <div class="bias-score-wrap">
     <div class="bias-score-bar"><div class="bias-score-fill" id="bias-fill" style="width:50%"></div></div>
-    <div class="bias-score-num" id="bias-score-num">0.0</div>
+    <div class="bias-score-num" id="bias-score-num">0.000</div>
   </div>
-  <div id="bias-scale" style="display:flex;gap:4px;margin-bottom:0"></div>
+  <div class="scale-row" id="bias-scale"></div>
   <div class="accordion">
     <button class="accordion-btn" onclick="toggleAccordion()">
       <span>Score Breakdown</span>
-      <span class="accordion-arrow" id="accordion-arrow">▶</span>
+      <span class="accordion-arrow" id="acc-arrow">▶</span>
     </button>
-    <div class="accordion-body" id="accordion-body">
-      <div class="score-method-title">Score = Σ (anomaly × weight) · clipped to [−5, +5] · Storage 75% · Rigs 25%</div>
+    <div class="accordion-body" id="acc-body">
+      <div class="score-method">Score = −(storage % dev / 10) · clipped to [−5, +5]</div>
       <div class="score-row" id="sm-stor"></div>
-      <div class="score-row" id="sm-rig"></div>
       <div class="score-row" id="sm-total"></div>
     </div>
   </div>
 </div>
 
+<!-- SCORE CHART -->
+<div class="block">
+  <div class="bhead">
+    <div>
+      <div class="btitle">Fundamental Bias Score — History</div>
+      <div class="bsub" id="score-sub">Weekly · Score [−5, +5]</div>
+    </div>
+    <div class="bhead-right">
+      <div class="legend">
+        <span class="li"><span class="ldband" style="background:var(--green)"></span>Bullish</span>
+        <span class="li"><span class="ldband" style="background:var(--yellow)"></span>Neutral</span>
+        <span class="li"><span class="ldband" style="background:var(--red)"></span>Bearish</span>
+      </div>
+      <button class="toggle-btn" onclick="exportScore()">⬇ Export</button>
+    </div>
+  </div>
+  <div id="spin-score" class="spin"><span class="sp"></span>Loading…</div>
+  <div class="cw" style="height:240px;display:none" id="wrap-score"><canvas id="c-score"></canvas></div>
+</div>
+
+<!-- NG=F FUTURES PRICE CHART -->
+<div class="block">
+  <div class="bhead">
+    <div>
+      <div class="btitle">NG=F — Natural Gas Front Month Futures</div>
+      <div class="bsub" id="ngf-sub">Weekly · $/MMBtu · Yahoo Finance</div>
+    </div>
+    <div class="bhead-right">
+      <button class="toggle-btn on" id="btn-line" onclick="setChartType('line')">Line</button>
+      <button class="toggle-btn"   id="btn-candle" onclick="setChartType('candle')">Candles</button>
+      <button class="toggle-btn" onclick="exportNgf()">⬇ Export</button>
+    </div>
+  </div>
+  <div id="spin-ngf" class="spin"><span class="sp"></span>Loading…</div>
+  <div class="cw" style="height:300px;display:none" id="wrap-ngf"><canvas id="c-ngf"></canvas></div>
+</div>
+
 <!-- STORAGE CHART -->
 <div class="block">
   <div class="bhead">
-    <div><div class="btitle">Natural Gas Storage — Lower 48</div><div class="bsub" id="stor-sub">Weekly · Bcf · vs 5-year range</div></div>
-    <div class="legend">
-      <span class="li"><span class="ldr" style="background:var(--blue)"></span>Storage Bcf</span>
-      <span class="li"><span class="ldr" style="background:var(--blue);opacity:.5"></span>5y Avg</span>
-      <span class="li"><span class="ldband" style="background:rgba(68,147,248,.15)"></span>5y Range</span>
+    <div>
+      <div class="btitle">Natural Gas Storage — Lower 48</div>
+      <div class="bsub" id="stor-sub">Weekly · Bcf · vs 5-year range</div>
+    </div>
+    <div class="bhead-right">
+      <div class="legend">
+        <span class="li"><span class="ldr" style="background:var(--blue)"></span>Storage</span>
+        <span class="li"><span class="ldr" style="background:var(--blue);opacity:.5"></span>5y Avg</span>
+        <span class="li"><span class="ldband" style="background:rgba(68,147,248,.4)"></span>5y Range</span>
+      </div>
+      <button class="toggle-btn" onclick="exportStorage()">⬇ Export</button>
     </div>
   </div>
   <div id="spin-stor" class="spin"><span class="sp"></span>Loading…</div>
-  <div class="cw" style="height:240px;display:none" id="wrap-stor"><canvas id="c-stor"></canvas></div>
+  <div class="cw" style="height:260px;display:none" id="wrap-stor"><canvas id="c-stor"></canvas></div>
 </div>
 
-<!-- FUTURES SECTION -->
+<!-- DEVIATION CHART -->
 <div class="block">
   <div class="bhead">
-    <div><div class="btitle">Henry Hub Natural Gas Futures — NYMEX</div><div class="bsub" id="fut-sub">Front month (RNGC1) daily · $/MMBtu · vs 5-year range</div></div>
-    <div class="legend">
-      <span class="li"><span class="ldr" style="background:var(--yellow)"></span>RNGC1</span>
-      <span class="li"><span class="ldr" style="background:var(--yellow);opacity:.5"></span>5y Avg</span>
-      <span class="li"><span class="ldband" style="background:rgba(227,179,65,.12)"></span>5y Range</span>
+    <div>
+      <div class="btitle">Storage vs 5-Year Average — Deviation</div>
+      <div class="bsub" id="dev-sub">Weekly · Bcf · surplus / deficit vs 5y avg</div>
+    </div>
+    <div class="bhead-right">
+      <div class="legend">
+        <span class="li"><span class="ldband" style="background:var(--red)"></span>Surplus (above avg)</span>
+        <span class="li"><span class="ldband" style="background:var(--green)"></span>Deficit (below avg)</span>
+      </div>
+      <button class="toggle-btn" onclick="exportDev()">⬇ Export</button>
     </div>
   </div>
-  <div id="spin-fut" class="spin"><span class="sp"></span>Loading…</div>
-  <div class="cw" style="height:220px;display:none" id="wrap-fut"><canvas id="c-fut"></canvas></div>
-  <!-- Futures curve table -->
-  <div class="section-label" style="margin-top:14px;margin-bottom:0">Futures Curve — Current Prices</div>
-  <div class="fut-grid" id="fut-grid">
-    <div class="fut-box"><div class="fut-month">—</div><div class="fut-price">—</div></div>
-    <div class="fut-box"><div class="fut-month">—</div><div class="fut-price">—</div></div>
-    <div class="fut-box"><div class="fut-month">—</div><div class="fut-price">—</div></div>
-    <div class="fut-box"><div class="fut-month">—</div><div class="fut-price">—</div></div>
-    <div class="fut-box"><div class="fut-month">—</div><div class="fut-price">—</div></div>
-  </div>
+  <div id="spin-dev" class="spin"><span class="sp"></span>Loading…</div>
+  <div class="cw" style="height:220px;display:none" id="wrap-dev"><canvas id="c-dev"></canvas></div>
 </div>
 
-<!-- RIG COUNT CHART -->
-<div class="block">
-  <div class="bhead">
-    <div><div class="btitle">Natural Gas Rig Count — U.S. (Baker Hughes)</div><div class="bsub" id="rig-sub">Weekly · Rigs · vs 5-year range</div></div>
-    <div class="legend">
-      <span class="li"><span class="ldr" style="background:var(--purple)"></span>Rig Count</span>
-      <span class="li"><span class="ldr" style="background:var(--purple);opacity:.5"></span>5y Avg</span>
-      <span class="li"><span class="ldband" style="background:rgba(163,113,247,.12)"></span>5y Range</span>
-    </div>
-  </div>
-  <div id="spin-rig" class="spin"><span class="sp"></span>Loading…</div>
-  <div class="cw" style="height:220px;display:none" id="wrap-rig"><canvas id="c-rig"></canvas></div>
-  <div class="rigs-meta" id="rigs-meta" style="display:none">
-    <div class="rigs-stat"><div class="rigs-stat-lbl">Current</div><div class="rigs-stat-val" id="rig-cur">—</div><div class="rigs-stat-sub" id="rig-cur-dt">—</div></div>
-    <div class="rigs-stat"><div class="rigs-stat-lbl">5Y Average</div><div class="rigs-stat-val" id="rig-avg">—</div><div class="rigs-stat-sub">same week avg</div></div>
-    <div class="rigs-stat"><div class="rigs-stat-lbl">vs 5Y Avg</div><div class="rigs-stat-val" id="rig-vs">—</div><div class="rigs-stat-sub">% deviation</div></div>
-    <div class="rigs-stat"><div class="rigs-stat-lbl">52w High</div><div class="rigs-stat-val" id="rig-hi">—</div><div class="rigs-stat-sub">—</div></div>
-    <div class="rigs-stat"><div class="rigs-stat-lbl">52w Low</div><div class="rigs-stat-val" id="rig-lo">—</div><div class="rigs-stat-sub">—</div></div>
-  </div>
-</div>
-
-<!-- ERROR -->
-<div id="err-block" style="display:none" class="block">
-  <div class="btitle" style="color:var(--red);margin-bottom:6px">⚠ API Error Details</div>
+<div class="err-block" id="err-block">
+  <div class="btitle" style="color:var(--red);margin-bottom:4px">⚠ Error</div>
   <div class="err-detail" id="err-detail"></div>
 </div>
 
-<div style="padding:8px 0 4px;font-size:10px;color:var(--text3);font-family:var(--mono);text-align:right">
-  Source: U.S. Energy Information Administration (EIA) · api.eia.gov/v2 · Baker Hughes rig count via EIA
+<div style="padding:6px 0 4px;font-size:10px;color:var(--text3);font-family:var(--mono);text-align:right">
+  EIA · api.eia.gov/v2 · NW2_EPG0_SWO_R48_BCF &nbsp;|&nbsp; Yahoo Finance · NG=F · via allorigins proxy
 </div>
 
 <script>
 const API_KEY = '0a6cBnSfbVdXpRPcDeuQAeTjGXajaK16pPM8sMF6';
-const WEIGHTS = { stor: 0.75, rig: 0.25 };
-const TW = { '2y':{days:730},'1y':{days:365},'ytd':{days:null},'3m':{days:90},'1m':{days:30} };
+const WINDOWS = { max:99999, '5y':1825, '2y':730, '1y':365, ytd:null, '3m':90, '1m':30 };
 
-let currentWindow = '1y';
-let apiCallCount = 0;
-let DATA = { storage:[], rigs:[], fut:{} }; // fut: { RNGC1:[], RNGC2:[], ... }
-let charts = { stor:null, fut:null, rig:null };
+let currentWindow  = 'max';
+let ngfChartType   = 'line'; // 'line' | 'candle'
+let apiCallCount   = 0;
+let storageData    = [];
+let ngfData        = []; // [{date,open,high,low,close,ts}]
+let charts         = { score:null, ngf:null, stor:null, dev:null };
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
-const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
-const sgn = v => v>=0?'+':'';
-const fmtN = (v,d=1) => v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
-const fmtPct = v => (v>=0?'+':'')+v.toFixed(1)+'%';
-
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
 function incAPI(){ apiCallCount++; document.getElementById('api-counter').textContent=`API calls: ${apiCallCount}`; }
 function setDot(s){ document.getElementById('sdot').className='dot '+s; }
-function setBadge(cls,txt){ const el=document.getElementById('status-badge');el.textContent=txt;el.className='badge badge-'+cls; }
+function setBadge(cls,txt){ const el=document.getElementById('status-badge'); el.textContent=txt; el.className='badge badge-'+cls; }
 function showErr(msg){ document.getElementById('err-block').style.display='block'; document.getElementById('err-detail').textContent=msg; }
 function hideErr(){ document.getElementById('err-block').style.display='none'; }
 
-function parseDate(iso){
-  // handles YYYY-MM-DD and YYYYMMDD
-  if(iso.length===8) iso=`${iso.slice(0,4)}-${iso.slice(4,6)}-${iso.slice(6,8)}`;
-  return new Date(iso+'T12:00:00Z');
+function pd(iso){ return new Date(iso+'T12:00:00Z'); }
+function fmtDate(iso){
+  return pd(iso).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
 }
-function fmtDateShort(iso){ return parseDate(iso).toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
-function fmtDateShortYear(iso){ return parseDate(iso).toLocaleDateString('en-US',{month:'short',year:'2-digit'}); }
-
-// Get delivery month for RNGC contract number, relative to today
-// NYMEX NG front month expires ~3 biz days before end of prior month
-// We approximate: if today is past the 20th, front month = next calendar month; else current month
-function getFutureContractMonths(){
-  const now = new Date();
-  const yr = now.getFullYear();
-  const mo = now.getMonth(); // 0-based
-  // Approximate expiry: front month rolls ~20th of month before delivery
-  const rollDay = 20;
-  // Start month for RNGC1
-  let startMo = mo; // current month
-  if(now.getDate() >= rollDay) startMo = mo + 1; // rolled to next
-  const months = [];
-  for(let i=0;i<5;i++){
-    const total = startMo + i;
-    const y = yr + Math.floor(total/12);
-    const m = total % 12;
-    months.push({ year:y, month:m }); // month 0-based
-  }
-  return months;
-}
-
-function monthLabel(yr, mo){ // mo 0-based
-  return new Date(yr,mo,1).toLocaleDateString('en-US',{month:'short',year:'numeric'});
+function fmtDateFromTs(ts){
+  return new Date(ts).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
 }
 
 function getHistDays(){
-  if(currentWindow==='ytd'){ const n=new Date(); return Math.max(1,Math.floor((n-new Date(n.getFullYear(),0,1))/864e5)); }
-  return TW[currentWindow].days;
+  if(currentWindow==='ytd'){ const n=new Date(); return Math.floor((n-new Date(n.getFullYear(),0,1))/864e5); }
+  return WINDOWS[currentWindow];
 }
 function filterByWindow(series){
-  const days=getHistDays(), cutoff=new Date(); cutoff.setDate(cutoff.getDate()-days);
-  return series.filter(d=>parseDate(d.date)>=cutoff);
+  const days=getHistDays();
+  if(!days||days>=99999) return series.slice();
+  const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-days);
+  return series.filter(d=>pd(d.date)>=cutoff);
+}
+function filterNgfByWindow(series){
+  const days=getHistDays();
+  if(!days||days>=99999) return series.slice();
+  const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-days);
+  return series.filter(d=>new Date(d.ts)>=cutoff);
 }
 
-// 5-year band: same calendar period ±7 days, 1-5 years back
-function compute5y(allData, filteredDates, isWeekly=true){
-  const avgs=[],mins=[],maxs=[];
-  filteredDates.forEach(date=>{
-    const ref = parseDate(date);
-    const peers = allData.filter(p=>{
-      const pd = parseDate(p.date);
-      const diffYears = ref.getFullYear()-pd.getFullYear();
-      if(diffYears<1||diffYears>5) return false;
-      const tolerance = isWeekly ? 7 : 15;
-      const refDOY = (ref.getMonth()*30+ref.getDate());
-      const pdDOY = (pd.getMonth()*30+pd.getDate());
-      return Math.abs(refDOY-pdDOY) <= tolerance;
-    });
-    const vals = peers.map(p=>p.value).filter(v=>!isNaN(v));
-    if(vals.length>=2){
-      const avg = vals.reduce((a,b)=>a+b)/vals.length;
-      avgs.push(avg); mins.push(Math.min(...vals)); maxs.push(Math.max(...vals));
-    } else { avgs.push(null); mins.push(null); maxs.push(null); }
+function compute5y(all, dates){
+  return dates.map(date=>{
+    const ref=pd(date), refDOY=ref.getMonth()*30+ref.getDate();
+    const peers=all.filter(p=>{
+      const pp=pd(p.date), diff=ref.getFullYear()-pp.getFullYear();
+      if(diff<1||diff>5) return false;
+      return Math.abs((pp.getMonth()*30+pp.getDate())-refDOY)<=7;
+    }).map(p=>p.value).filter(v=>isFinite(v));
+    if(peers.length<2) return {avg:null,min:null,max:null};
+    const avg=peers.reduce((a,b)=>a+b,0)/peers.length;
+    return {avg,min:Math.min(...peers),max:Math.max(...peers)};
   });
-  return {avgs,mins,maxs};
 }
 
-// ── EIA FETCH ─────────────────────────────────────────────────────────────────
-function buildQS(params){
-  return Object.entries(params).map(([k,v])=>`${k}=${encodeURIComponent(v)}`).join('&');
+function scoreFromDev(pct){ return clamp(-pct/10,-5,5); }
+function biasLabel(s){
+  if(s> 2.5) return {w:'BULLISH',    cls:'bull'};
+  if(s> 0.8) return {w:'SL. BULLISH',cls:'sbull'};
+  if(s<-2.5) return {w:'BEARISH',    cls:'bear'};
+  if(s<-0.8) return {w:'SL. BEARISH',cls:'sbear'};
+  return {w:'NEUTRAL',cls:'neut'};
 }
 
-async function fetchEIA(path, params, valueKey='value'){
+// ── EIA STORAGE FETCH ─────────────────────────────────────────────────────────
+async function fetchStorage(){
   incAPI();
-  const qs = buildQS({api_key:API_KEY, ...params});
-  const url = `https://api.eia.gov/v2/${path}?${qs}`;
-  let res, json;
-  try { res = await fetch(url); } catch(e){ throw new Error(`Network: ${e.message}`); }
-  try { json = await res.json(); } catch(e){ throw new Error(`Bad JSON (HTTP ${res.status})`); }
-  if(!res.ok||json.response?.error) throw new Error(`EIA: ${json.response?.error||res.status}\n${url}`);
-  const rows = json.response?.data||[];
-  if(!rows.length) throw new Error(`No data returned\n${url}`);
-  return rows.map(r=>({date:r.period, value:parseFloat(r[valueKey])})).filter(d=>!isNaN(d.value));
+  const qs=[
+    `api_key=${API_KEY}`,`frequency=weekly`,`data[0]=value`,
+    `facets[series][]=NW2_EPG0_SWO_R48_BCF`,
+    `sort[0][column]=period`,`sort[0][direction]=asc`,`length=1000`
+  ].join('&');
+  const url=`https://api.eia.gov/v2/natural-gas/stor/wkly/data?${qs}`;
+  let res,json;
+  try{ res=await fetch(url); } catch(e){ throw new Error(`Network: ${e.message}`); }
+  try{ json=await res.json(); } catch(e){ throw new Error(`Bad JSON (HTTP ${res.status})`); }
+  if(!res.ok||json.response?.error) throw new Error(`EIA: ${json.response?.error||'HTTP '+res.status}\n${url}`);
+  const rows=json.response?.data||[];
+  if(!rows.length) throw new Error(`No rows returned.\n${url}`);
+  return rows.map(r=>({date:r.period,value:parseFloat(r.value)})).filter(d=>isFinite(d.value)).sort((a,b)=>a.date.localeCompare(b.date));
 }
 
-async function fetchSeriesId(seriesId){
+// ── YAHOO FINANCE FETCH ───────────────────────────────────────────────────────
+async function fetchNGF(){
   incAPI();
-  const qs = buildQS({'api_key':API_KEY,'data[0]':'value','sort[0][column]':'period','sort[0][direction]':'asc','length':'2000'});
-  const url = `https://api.eia.gov/v2/seriesid/${seriesId}?${qs}`;
+  // period1 = 2010-01-01 unix, period2 = now, interval = 1wk
+  const period1 = Math.floor(new Date('2010-01-01').getTime()/1000);
+  const period2 = Math.floor(Date.now()/1000);
+  const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/NG=F?period1=${period1}&period2=${period2}&interval=1wk&events=history`;
+  // Use allorigins CORS proxy
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooUrl)}`;
   let res, json;
-  try { res = await fetch(url); } catch(e){ throw new Error(`Network: ${e.message}`); }
-  try { json = await res.json(); } catch(e){ throw new Error(`Bad JSON (HTTP ${res.status})`); }
-  if(!res.ok||json.response?.error) throw new Error(`EIA seriesid: ${json.response?.error||res.status}\n${url}`);
-  const rows = json.response?.data||[];
-  if(!rows.length) throw new Error(`No data for ${seriesId}`);
-  // normalize period: YYYYMMDD → YYYY-MM-DD
-  return rows.map(r=>{
-    let d = r.period;
-    if(d.length===8) d=`${d.slice(0,4)}-${d.slice(4,6)}-${d.slice(6,8)}`;
-    return {date:d, value:parseFloat(r.value)};
-  }).filter(d=>!isNaN(d.value)).sort((a,b)=>a.date.localeCompare(b.date));
+  try{ res=await fetch(proxyUrl); } catch(e){ throw new Error(`NGF network: ${e.message}`); }
+  try{ json=await res.json(); }    catch(e){ throw new Error(`NGF bad JSON`); }
+
+  let data;
+  try{ data=JSON.parse(json.contents); } catch(e){ throw new Error(`NGF parse error: ${json.contents?.slice(0,200)}`); }
+
+  const result=data?.chart?.result?.[0];
+  if(!result) throw new Error(`NGF: no result in Yahoo response`);
+
+  const timestamps  = result.timestamp;
+  const q           = result.indicators?.quote?.[0];
+  if(!timestamps||!q) throw new Error(`NGF: missing timestamps or quotes`);
+
+  return timestamps.map((ts,i)=>({
+    ts:  ts*1000,
+    date: new Date(ts*1000).toISOString().slice(0,10),
+    open:  parseFloat(q.open?.[i]),
+    high:  parseFloat(q.high?.[i]),
+    low:   parseFloat(q.low?.[i]),
+    close: parseFloat(q.close?.[i]),
+  })).filter(d=>isFinite(d.close)&&isFinite(d.open)&&isFinite(d.high)&&isFinite(d.low))
+     .sort((a,b)=>a.ts-b.ts);
 }
 
 // ── LOAD ALL ──────────────────────────────────────────────────────────────────
@@ -374,280 +369,416 @@ async function loadAll(){
   setDot('loading'); setBadge('loading','Loading…');
   document.getElementById('upd-lbl').textContent='Fetching…';
   hideErr(); resetSpinners();
-
-  try {
-    // 1. Storage weekly
-    const storageRaw = await fetchEIA(
-      'natural-gas/stor/wkly/data',
-      {'frequency':'weekly','data[0]':'value','facets[series][]':'NW2_EPG0_SWO_R48_BCF',
-       'sort[0][column]':'period','sort[0][direction]':'asc','length':'1000'},
-      'value'
-    );
-    DATA.storage = storageRaw.sort((a,b)=>a.date.localeCompare(b.date));
-
-    // 2. Futures RNGC1–RNGC5 — daily via natural-gas/pri/fut/data
-    const futKeys = ['RNGC1','RNGC2','RNGC3','RNGC4','RNGC5'];
-    const futResults = await Promise.all(futKeys.map(k =>
-      fetchEIA(
-        'natural-gas/pri/fut/data',
-        {'frequency':'daily','data[0]':'value','facets[series][]':k,
-         'sort[0][column]':'period','sort[0][direction]':'asc','length':'2000'},
-        'value'
-      ).then(rows => rows.sort((a,b)=>a.date.localeCompare(b.date)))
-       .catch(()=>[])
-    ));
-    futKeys.forEach((k,i)=>{ DATA.fut[k]=futResults[i]; });
-
-    // 3. Rig count — Baker Hughes natural gas rigs via EIA seriesid
-    // NG.RNGR90_NUS_RIG.W = U.S. natural gas rotary rigs in operation, weekly
-    const rigsRaw = await fetchSeriesId('NG.RNGR90_NUS_RIG.W');
-    DATA.rigs = rigsRaw;
-
-    renderAll();
-    setDot('ok'); setBadge('live','Live data');
-    document.getElementById('upd-lbl').textContent =
-      new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  } catch(e){
-    setDot('err'); setBadge('err','Error');
-    document.getElementById('upd-lbl').textContent='Error — see below';
-    ['spin-stor','spin-fut','spin-rig'].forEach(id=>{
-      document.getElementById(id).innerHTML=`<span style="color:var(--red)">⚠ ${e.message.split('\n')[0]}</span>`;
-    });
-    showErr(e.message);
-    console.error(e);
-  }
+  const errors=[];
+  try{ storageData=await fetchStorage(); } catch(e){ errors.push('Storage: '+e.message); }
+  try{ ngfData    =await fetchNGF();     } catch(e){ errors.push('NG=F: '+e.message); }
+  if(errors.length){ showErr(errors.join('\n\n')); }
+  renderAll();
+  if(errors.length){ setDot('err'); setBadge('err','Partial error'); }
+  else { setDot('ok'); setBadge('live','Live data'); }
+  document.getElementById('upd-lbl').textContent=
+    new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 
-// ── RENDER ALL ────────────────────────────────────────────────────────────────
+function resetSpinners(){
+  ['wrap-score','wrap-ngf','wrap-stor','wrap-dev'].forEach(id=>document.getElementById(id).style.display='none');
+  ['spin-score','spin-ngf','spin-stor','spin-dev'].forEach(id=>{
+    document.getElementById(id).style.display='block';
+    document.getElementById(id).innerHTML='<span class="sp"></span>Loading…';
+  });
+}
+
 function renderAll(){
-  if(DATA.storage.length) renderStorageChart();
-  if(Object.keys(DATA.fut).length) { renderFutChart(); renderFutTable(); }
-  if(DATA.rigs.length) { renderRigChart(); renderRigStats(); }
   computeBias();
+  if(storageData.length){ renderScoreChart(); renderStorChart(); renderDevChart(); }
+  if(ngfData.length)    { renderNgfChart(); }
   updateSubtitles();
-}
-
-function updateSubtitles(){
-  const m={'2y':'2-year','1y':'1-year','ytd':'YTD','3m':'3-month','1m':'1-month'};
-  const w = m[currentWindow]||currentWindow;
-  document.getElementById('stor-sub').textContent=`Weekly · Bcf · ${w} history vs 5-year range`;
-  document.getElementById('fut-sub').textContent=`Front month (RNGC1) daily · $/MMBtu · ${w} history vs 5-year range`;
-  document.getElementById('rig-sub').textContent=`Weekly · Rigs · ${w} history vs 5-year range`;
 }
 
 // ── BIAS ──────────────────────────────────────────────────────────────────────
 function computeBias(){
-  if(!DATA.storage.length||!DATA.rigs.length) return;
+  if(!storageData.length) return;
+  const latest=storageData[storageData.length-1];
+  const [{avg}]=compute5y(storageData,[latest.date]);
+  const devBcf=avg!=null?latest.value-avg:0;
+  const devPct=avg!=null&&avg!==0?(devBcf/avg*100):0;
+  const score=scoreFromDev(devPct);
 
-  // Storage
-  const storL = DATA.storage[DATA.storage.length-1];
-  const s5 = compute5y(DATA.storage,[storL.date],true);
-  const storAvg = s5.avgs[0];
-  const storDevBcf = storAvg ? storL.value-storAvg : 0;
-  const storDevPct = storAvg ? (storDevBcf/storAvg*100) : 0;
-  const storAnom = clamp(-storDevPct/10,-3,3); // bearish if high storage
-
-  // Rigs
-  const rigL = DATA.rigs[DATA.rigs.length-1];
-  const r5 = compute5y(DATA.rigs,[rigL.date],true);
-  const rigAvg = r5.avgs[0];
-  const rigDevPct = rigAvg ? ((rigL.value-rigAvg)/rigAvg*100) : 0;
-  const rigAnom = clamp(-rigDevPct/10,-3,3); // bearish if many rigs (more supply)
-
-  const cStor = storAnom*WEIGHTS.stor;
-  const cRig  = rigAnom*WEIGHTS.rig;
-  const score = clamp(cStor+cRig,-5,5);
-
-  // Update metric boxes
-  function setM(vi,si,val,sub,col){
-    const e=document.getElementById(vi); e.textContent=val; e.style.color=col;
-    if(si) document.getElementById(si).textContent=sub;
-  }
-  const sCol = Math.abs(storDevPct)<3?'var(--yellow)':storDevBcf<0?'var(--green)':'var(--red)';
-  setM('m-stor-val','m-stor-sub',Math.round(storL.value).toLocaleString(),`Bcf · ${storL.date}`,'var(--text)');
-  setM('m-stor-dev','m-stor-dev-sub',(storDevBcf>=0?'+':'')+Math.round(storDevBcf).toLocaleString()+' Bcf',fmtPct(storDevPct)+' vs 5y avg',sCol);
-
-  const rCol = Math.abs(rigDevPct)<5?'var(--yellow)':rigDevPct>0?'var(--red)':'var(--green)';
-  setM('m-rig-val','m-rig-sub',Math.round(rigL.value).toString(),`rigs · ${rigL.date}`,'var(--text)');
-  setM('m-rig-dev','m-rig-dev-sub',fmtPct(rigDevPct),'vs 5y avg',rCol);
-
-  // Bias label & bar
-  const {w,cls} = biasLabel(score);
-  const bw = document.getElementById('bias-word'); bw.textContent=w; bw.className='bias-word '+cls;
+  document.getElementById('m-stor-val').textContent=Math.round(latest.value).toLocaleString();
+  document.getElementById('m-stor-val').style.color='var(--text)';
+  document.getElementById('m-stor-sub').textContent=`Bcf · ${fmtDate(latest.date)}`;
+  document.getElementById('m-stor-avg').textContent=avg!=null?Math.round(avg).toLocaleString():'—';
+  document.getElementById('m-stor-avg').style.color='var(--text)';
+  document.getElementById('m-stor-avg-sub').textContent=avg!=null?'Bcf · same week 5y avg':'not enough data';
+  const dc=Math.abs(devPct)<3?'var(--yellow)':devBcf<0?'var(--green)':'var(--red)';
+  document.getElementById('m-stor-dev').textContent=(devBcf>=0?'+':'')+Math.round(devBcf).toLocaleString()+' Bcf';
+  document.getElementById('m-stor-dev').style.color=dc;
+  document.getElementById('m-stor-dev-sub').textContent=(devPct>=0?'+':'')+devPct.toFixed(1)+'% vs 5y avg';
+  const {w,cls}=biasLabel(score);
+  const bw=document.getElementById('bias-word'); bw.textContent=w; bw.className='bias-word '+cls;
   document.getElementById('bias-fill').style.width=((score+5)/10*100).toFixed(1)+'%';
   document.getElementById('bias-fill').style.background=score>0.8?'var(--green)':score<-0.8?'var(--red)':'var(--yellow)';
   document.getElementById('bias-score-num').textContent=(score>=0?'+':'')+score.toFixed(3);
-
-  // Scale
   const SCALE=[{l:'BEARISH',c:'bear'},{l:'SL. BEARISH',c:'sbear'},{l:'NEUTRAL',c:'neut'},{l:'SL. BULLISH',c:'sbull'},{l:'BULLISH',c:'bull'}];
-  const cols={bull:'var(--green)',sbull:'#7ed49a',neut:'var(--yellow)',sbear:'#ffaa99',bear:'var(--red)'};
+  const COLS={bull:'var(--green)',sbull:'#7ed49a',neut:'var(--yellow)',sbear:'#ffaa99',bear:'var(--red)'};
   const ai=score>2.5?4:score>0.8?3:score>=-0.8?2:score>=-2.5?1:0;
   document.getElementById('bias-scale').innerHTML=SCALE.map((it,i)=>{
-    const a=i===ai,col=cols[it.c];
-    return`<div style="flex:1;text-align:center;padding:4px 2px;border-radius:4px;font-size:9px;font-weight:${a?700:400};font-family:var(--mono);border:1px solid ${a?col:'var(--border2)'};background:${a?col+'22':'transparent'};color:${a?col:'var(--text3)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${it.l}</div>`;
+    const a=i===ai,col=COLS[it.c];
+    return `<div style="flex:1;text-align:center;padding:4px 2px;border-radius:4px;font-size:9px;font-weight:${a?700:400};font-family:var(--mono);border:1px solid ${a?col:'var(--border2)'};background:${a?col+'22':'transparent'};color:${a?col:'var(--text3)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${it.l}</div>`;
   }).join('');
+  const tc=score>0.8?'var(--green)':score<-0.8?'var(--red)':'var(--yellow)';
+  const ac=score>0.001?'var(--green)':score<-0.001?'var(--red)':'var(--yellow)';
+  const bp=clamp(((score+5)/10)*100,0,100).toFixed(1);
+  document.getElementById('sm-stor').innerHTML=
+    `<span class="srl">Storage vs 5y avg (inverted)</span>`+
+    `<span class="sranom" style="color:${ac}">${score>=0?'+':''}${score.toFixed(3)}</span>`+
+    `<span class="sreq">×</span><span class="srwt">1.00</span><span class="sreq">=</span>`+
+    `<div class="srbar"><div class="srfill" style="width:${bp}%;background:${ac}"></div></div>`+
+    `<span class="srval" style="color:${ac}">${score>=0?'+':''}${score.toFixed(3)}</span>`;
+  document.getElementById('sm-total').innerHTML=
+    `<span class="srtl">Total score (clipped ±5)</span><span style="flex:1"></span>`+
+    `<span class="srtv" style="color:${tc}">${score>=0?'+':''}${score.toFixed(3)}</span>`;
+}
 
-  // Breakdown rows
-  function sRow(label,anom,weight,contrib,total){
-    if(total){
-      const tc=score>0.8?'var(--green)':score<-0.8?'var(--red)':'var(--yellow)';
-      return`<span class="score-total-label">${label}</span><span style="flex:1"></span><span class="score-total-val" style="color:${tc}">${(score>=0?'+':'')+score.toFixed(3)}</span>`;
-    }
-    const col=contrib>0.001?'var(--green)':contrib<-0.001?'var(--red)':'var(--yellow)';
-    const bp=clamp(((contrib+2)/4)*100,0,100).toFixed(1);
-    return`<span class="score-row-label">${label}</span><span class="score-row-anom" style="color:${col}">${sgn(anom)}${anom.toFixed(2)}</span><span class="score-row-eq">×</span><span class="score-row-wt">${weight.toFixed(2)}</span><span class="score-row-eq">=</span><div class="score-row-bar"><div class="score-row-fill" style="width:${bp}%;background:${col}"></div></div><span class="score-row-val" style="color:${col}">${sgn(contrib)}${contrib.toFixed(3)}</span>`;
+// ── CHART HELPERS ─────────────────────────────────────────────────────────────
+function baseTooltip(){
+  return {backgroundColor:'#1c2128',titleColor:'#e6edf3',bodyColor:'#8b949e',borderColor:'#30363d',borderWidth:1,padding:10,titleFont:{family:'Inter',size:11},bodyFont:{family:'Inter',size:11}};
+}
+function baseXScale(){ return {grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#6e7681',font:{family:'Inter',size:9},maxRotation:45,autoSkip:true,maxTicksLimit:16}}; }
+function baseYScale(cb){ return {grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#6e7681',font:{family:'Inter',size:9},callback:cb||undefined}}; }
+
+// Band fill plugin (storage)
+const bandPlugin={
+  id:'bandFill',
+  beforeDatasetsDraw(chart){
+    const{ctx:c,scales:{x,y},chartArea:{top,bottom}}=chart;
+    const minDs=chart.data.datasets.find(d=>d._k==='min');
+    const maxDs=chart.data.datasets.find(d=>d._k==='max');
+    if(!minDs||!maxDs) return;
+    const mn=minDs.data,mx=maxDs.data;
+    c.save(); c.beginPath(); let go=false;
+    mx.forEach((v,i)=>{
+      if(v==null||!isFinite(v)) return;
+      const px=x.getPixelForValue(i),py=Math.max(top,Math.min(bottom,y.getPixelForValue(v)));
+      go?c.lineTo(px,py):(c.moveTo(px,py),go=true);
+    });
+    [...mn].reverse().forEach((v,i)=>{
+      const ri=mn.length-1-i;
+      if(v==null||!isFinite(v)) return;
+      c.lineTo(x.getPixelForValue(ri),Math.max(top,Math.min(bottom,y.getPixelForValue(v))));
+    });
+    c.closePath(); c.fillStyle='rgba(68,147,248,0.10)'; c.fill(); c.restore();
   }
-  document.getElementById('sm-stor').innerHTML=sRow('Storage vs 5y avg (inv.)',storAnom,WEIGHTS.stor,cStor);
-  document.getElementById('sm-rig').innerHTML=sRow('Rig count vs 5y avg (inv.)',rigAnom,WEIGHTS.rig,cRig);
-  document.getElementById('sm-total').innerHTML=sRow('Total score (clipped ±5)',0,0,0,true);
-}
+};
 
-function biasLabel(s){
-  if(s>2.5) return{w:'BULLISH',cls:'bull'}; if(s>0.8) return{w:'SL. BULLISH',cls:'sbull'};
-  if(s<-2.5) return{w:'BEARISH',cls:'bear'}; if(s<-0.8) return{w:'SL. BEARISH',cls:'sbear'};
-  return{w:'NEUTRAL',cls:'neut'};
-}
+// Zone plugin (score chart)
+const zonePlugin={
+  id:'scoreBgZones',
+  beforeDatasetsDraw(chart){
+    const{ctx:c,scales:{y},chartArea:{left,right,top,bottom}}=chart;
+    [{yMin:2.5,yMax:5,fill:'rgba(63,185,80,0.14)',dash:'rgba(63,185,80,0.4)',lbl:'BULLISH',lc:'#3fb950'},
+     {yMin:0.8,yMax:2.5,fill:'rgba(63,185,80,0.06)',dash:'rgba(63,185,80,0.25)',lbl:'SL. BULLISH',lc:'#7ed49a'},
+     {yMin:-0.8,yMax:0.8,fill:'rgba(227,179,65,0.06)',dash:'rgba(227,179,65,0.25)',lbl:'NEUTRAL',lc:'#e3b341'},
+     {yMin:-2.5,yMax:-0.8,fill:'rgba(255,123,114,0.06)',dash:'rgba(255,123,114,0.25)',lbl:'SL. BEARISH',lc:'#ffaa99'},
+     {yMin:-5,yMax:-2.5,fill:'rgba(255,123,114,0.14)',dash:'rgba(255,123,114,0.4)',lbl:'BEARISH',lc:'#ff7b72'}
+    ].forEach(z=>{
+      const y1=Math.max(top,y.getPixelForValue(z.yMax));
+      const y2=Math.min(bottom,y.getPixelForValue(z.yMin));
+      if(y2<=y1) return;
+      c.save();
+      c.fillStyle=z.fill; c.fillRect(left,y1,right-left,y2-y1);
+      c.strokeStyle=z.dash; c.lineWidth=1; c.setLineDash([5,4]);
+      c.beginPath(); c.moveTo(left,y1); c.lineTo(right,y1); c.stroke(); c.setLineDash([]);
+      c.font='600 9px Inter,sans-serif'; c.fillStyle=z.lc; c.globalAlpha=0.85;
+      c.fillText(z.lbl,left+8,y1+12); c.globalAlpha=1; c.restore();
+    });
+  }
+};
 
-// ── CHARTS ────────────────────────────────────────────────────────────────────
-function gBase(yFmt){
-  return{
-    responsive:true, maintainAspectRatio:false, animation:{duration:300},
-    plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2128',titleColor:'#e6edf3',bodyColor:'#8b949e',borderColor:'#30363d',borderWidth:1,padding:10,titleFont:{family:'Inter',size:11},bodyFont:{family:'Inter',size:11}}},
-    scales:{
-      x:{grid:{color:'rgba(33,38,45,0.8)'},ticks:{color:'#6e7681',font:{family:'Inter',size:9},maxRotation:45,autoSkip:true,maxTicksLimit:16}},
-      y:{grid:{color:'rgba(33,38,45,0.8)'},ticks:{color:'#6e7681',font:{family:'Inter',size:9},callback:yFmt||((v)=>Math.round(v).toLocaleString())}}
-    }
-  };
-}
-
-function makeBandPlugin(pid,color){
-  return{id:pid,beforeDatasetsDraw(chart){
-    const{ctx,scales:{x,y}}=chart;
-    const mn=chart.data.datasets.find(d=>d._key==='min')?.data;
-    const mx=chart.data.datasets.find(d=>d._key==='max')?.data;
-    if(!mn||!mx)return;
-    ctx.save();ctx.beginPath();let go=false;
-    mx.forEach((v,i)=>{if(v==null||isNaN(v))return;const px=x.getPixelForValue(i),py=y.getPixelForValue(v);!go?(ctx.moveTo(px,py),go=true):ctx.lineTo(px,py);});
-    [...mn].reverse().forEach((v,i)=>{const ri=mn.length-1-i;if(v==null||isNaN(v))return;ctx.lineTo(x.getPixelForValue(ri),y.getPixelForValue(v));});
-    ctx.closePath();ctx.fillStyle=color;ctx.fill();ctx.restore();
-  }};
-}
-
-function drawLineChart(key,spinId,wrapId,canvasId,series,color,bandColor,labelFn,ttFmt,yFmt){
-  const filtered=filterByWindow(series); if(!filtered.length)return;
-  const{avgs,mins,maxs}=compute5y(series,filtered.map(d=>d.date),true);
-  const labels=filtered.map(d=>labelFn(d.date));
-  const values=filtered.map(d=>d.value);
-  document.getElementById(spinId).style.display='none';
-  document.getElementById(wrapId).style.display='block';
-  if(charts[key]){charts[key].destroy();charts[key]=null;}
-  const opts=gBase(yFmt);
-  opts.plugins.tooltip.callbacks={
-    label(c){if(['min','max'].includes(c.dataset._key))return null;return` ${c.dataset.label}: ${ttFmt(c.parsed.y)}`;},
-    afterBody(items){const i=items[0]?.dataIndex;if(i==null||mins[i]==null)return[];return[`5y range: ${ttFmt(mins[i])} – ${ttFmt(maxs[i])}`];}
-  };
-  opts.plugins.tooltip.filter=item=>!['min','max'].includes(item.dataset._key);
-  const ctx=document.getElementById(canvasId).getContext('2d');
-  charts[key]=new Chart(ctx,{
+// ── SCORE CHART ───────────────────────────────────────────────────────────────
+function renderScoreChart(){
+  const filtered=filterByWindow(storageData);
+  if(!filtered.length) return;
+  const dates=filtered.map(d=>d.date);
+  const band5y=compute5y(storageData,dates);
+  const scores=filtered.map((d,i)=>{
+    const{avg}=band5y[i];
+    return avg!=null&&avg!==0?scoreFromDev((d.value-avg)/avg*100):null;
+  });
+  const labels=dates.map(d=>fmtDate(d));
+  document.getElementById('spin-score').style.display='none';
+  document.getElementById('wrap-score').style.display='block';
+  if(charts.score){ charts.score.destroy(); charts.score=null; }
+  charts.score=new Chart(document.getElementById('c-score').getContext('2d'),{
     type:'line',
-    plugins:[makeBandPlugin('band_'+key,bandColor)],
-    data:{labels,datasets:[
-      {_key:'val',label:'Value',data:values,borderColor:color,borderWidth:2,pointRadius:0,pointHoverRadius:4,tension:0.3,fill:false},
-      {_key:'avg',label:'5y Avg',data:avgs,borderColor:color+'88',borderWidth:1.5,borderDash:[4,3],pointRadius:0,tension:0.3,fill:false},
-      {_key:'min',data:mins,borderColor:'transparent',pointRadius:0,fill:false},
-      {_key:'max',data:maxs,borderColor:'transparent',pointRadius:0,fill:false},
-    ]},options:opts
+    plugins:[zonePlugin],
+    data:{labels,datasets:[{
+      label:'Bias Score',data:scores,
+      borderColor:'#4493f8',borderWidth:2.5,
+      pointRadius:0,pointHoverRadius:6,
+      pointHoverBackgroundColor:'#4493f8',pointHoverBorderColor:'#e6edf3',pointHoverBorderWidth:2,
+      tension:0.35,fill:false,spanGaps:true
+    }]},
+    options:{
+      responsive:true,maintainAspectRatio:false,animation:{duration:300},
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{...baseTooltip(),callbacks:{
+          title:items=>dates[items[0]?.dataIndex]||'',
+          label:c=>{const s=scores[c.dataIndex];if(s==null)return null;return[` Score: ${s>=0?'+':''}${s.toFixed(3)}`,` Bias:  ${biasLabel(s).w}`];}
+        }}
+      },
+      scales:{
+        x:baseXScale(),
+        y:{...baseYScale(),min:-5,max:5,ticks:{color:'#6e7681',font:{family:'Inter',size:9},stepSize:1,callback:v=>(v>0?'+':'')+v.toFixed(0)}}
+      }
+    }
   });
 }
 
-function renderStorageChart(){
-  drawLineChart('stor','spin-stor','wrap-stor','c-stor',DATA.storage,'#4493f8','rgba(68,147,248,0.09)',
-    d=>fmtDateShort(d), v=>`${Math.round(v).toLocaleString()} Bcf`);
+// ── NGF CHART ─────────────────────────────────────────────────────────────────
+function setChartType(type){
+  ngfChartType=type;
+  document.getElementById('btn-line').classList.toggle('on',type==='line');
+  document.getElementById('btn-candle').classList.toggle('on',type==='candle');
+  if(ngfData.length) renderNgfChart();
 }
 
-function renderFutChart(){
-  const series = DATA.fut['RNGC1']||[];
-  if(!series.length) return;
-  drawLineChart('fut','spin-fut','wrap-fut','c-fut',series,'#e3b341','rgba(227,179,65,0.09)',
-    d=>fmtDateShort(d), v=>`$${v.toFixed(3)}/MMBtu`, v=>v.toFixed(2));
+function renderNgfChart(){
+  const filtered=filterNgfByWindow(ngfData);
+  if(!filtered.length) return;
+  document.getElementById('spin-ngf').style.display='none';
+  document.getElementById('wrap-ngf').style.display='block';
+  if(charts.ngf){ charts.ngf.destroy(); charts.ngf=null; }
+
+  const labels=filtered.map(d=>fmtDateFromTs(d.ts));
+  const ctx=document.getElementById('c-ngf').getContext('2d');
+
+  if(ngfChartType==='candle'){
+    // Candlestick — requires chartjs-chart-financial
+    const candleData=filtered.map(d=>({x:d.ts,o:d.open,h:d.high,l:d.low,c:d.close}));
+    charts.ngf=new Chart(ctx,{
+      type:'candlestick',
+      data:{datasets:[{
+        label:'NG=F',
+        data:candleData,
+        color:{up:'#3fb950',down:'#ff7b72',unchanged:'#8b949e'},
+        borderColor:{up:'#3fb950',down:'#ff7b72',unchanged:'#8b949e'},
+      }]},
+      options:{
+        responsive:true,maintainAspectRatio:false,animation:{duration:300},
+        plugins:{
+          legend:{display:false},
+          tooltip:{...baseTooltip(),callbacks:{
+            title:items=>{const d=filtered[items[0]?.dataIndex];return d?fmtDateFromTs(d.ts):'';},
+            label:c=>{
+              const d=filtered[c.dataIndex];
+              if(!d) return null;
+              return[` O: $${d.open.toFixed(3)}`,` H: $${d.high.toFixed(3)}`,` L: $${d.low.toFixed(3)}`,` C: $${d.close.toFixed(3)}`];
+            }
+          }}
+        },
+        scales:{
+          x:{type:'time',time:{unit:'month'},grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#6e7681',font:{family:'Inter',size:9},maxRotation:45}},
+          y:{...baseYScale(v=>'$'+v.toFixed(2))}
+        }
+      }
+    });
+  } else {
+    // Line chart
+    const closes=filtered.map(d=>d.close);
+    charts.ngf=new Chart(ctx,{
+      type:'line',
+      data:{labels,datasets:[{
+        label:'NG=F Close',data:closes,
+        borderColor:'#e3b341',borderWidth:2,
+        pointRadius:0,pointHoverRadius:6,
+        pointHoverBackgroundColor:'#e3b341',pointHoverBorderColor:'#e6edf3',pointHoverBorderWidth:2,
+        tension:0.2,fill:false
+      }]},
+      options:{
+        responsive:true,maintainAspectRatio:false,animation:{duration:300},
+        interaction:{mode:'index',intersect:false},
+        plugins:{
+          legend:{display:false},
+          tooltip:{...baseTooltip(),callbacks:{
+            title:items=>labels[items[0]?.dataIndex]||'',
+            label:c=>` NG=F: $${c.parsed.y.toFixed(3)}/MMBtu`
+          }}
+        },
+        scales:{
+          x:baseXScale(),
+          y:baseYScale(v=>'$'+v.toFixed(2))
+        }
+      }
+    });
+  }
 }
 
-function renderRigChart(){
-  drawLineChart('rig','spin-rig','wrap-rig','c-rig',DATA.rigs,'#a371f7','rgba(163,113,247,0.09)',
-    d=>fmtDateShort(d), v=>`${Math.round(v)} rigs`);
+// ── STORAGE CHART ─────────────────────────────────────────────────────────────
+function renderStorChart(){
+  const filtered=filterByWindow(storageData);
+  if(!filtered.length) return;
+  const dates=filtered.map(d=>d.date);
+  const values=filtered.map(d=>d.value);
+  const band5y=compute5y(storageData,dates);
+  const avgs=band5y.map(b=>b.avg),mins=band5y.map(b=>b.min),maxs=band5y.map(b=>b.max);
+  const labels=dates.map(d=>fmtDate(d));
+  document.getElementById('spin-stor').style.display='none';
+  document.getElementById('wrap-stor').style.display='block';
+  if(charts.stor){ charts.stor.destroy(); charts.stor=null; }
+  charts.stor=new Chart(document.getElementById('c-stor').getContext('2d'),{
+    type:'line',
+    plugins:[bandPlugin],
+    data:{labels,datasets:[
+      {_k:'val',label:'Storage',data:values,borderColor:'#4493f8',borderWidth:2,pointRadius:0,pointHoverRadius:6,pointHoverBackgroundColor:'#4493f8',pointHoverBorderColor:'#e6edf3',pointHoverBorderWidth:2,tension:0.3,fill:false},
+      {_k:'avg',label:'5y Avg',data:avgs,borderColor:'#4493f877',borderWidth:1.5,borderDash:[4,3],pointRadius:0,tension:0.3,fill:false},
+      {_k:'min',data:mins,borderColor:'transparent',pointRadius:0,fill:false},
+      {_k:'max',data:maxs,borderColor:'transparent',pointRadius:0,fill:false},
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,animation:{duration:300},
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{...baseTooltip(),filter:item=>!['min','max'].includes(item.dataset._k),callbacks:{
+          title:items=>dates[items[0]?.dataIndex]||'',
+          label:c=>` ${c.dataset.label}: ${Math.round(c.parsed.y).toLocaleString()} Bcf`,
+          afterBody(items){const i=items[0]?.dataIndex;if(i==null||mins[i]==null)return[];return[`5y range: ${Math.round(mins[i]).toLocaleString()} – ${Math.round(maxs[i]).toLocaleString()} Bcf`];}
+        }}
+      },
+      scales:{x:baseXScale(),y:baseYScale(v=>Math.round(v).toLocaleString())}
+    }
+  });
 }
 
-// ── FUTURES TABLE ─────────────────────────────────────────────────────────────
-function renderFutTable(){
-  const contractMonths = getFutureContractMonths(); // [{year,month},...]
-  const keys = ['RNGC1','RNGC2','RNGC3','RNGC4','RNGC5'];
-  const grid = document.getElementById('fut-grid');
-  grid.innerHTML = keys.map((k,i)=>{
-    const series = DATA.fut[k]||[];
-    const latest = series[series.length-1];
-    const prev   = series[series.length-2];
-    const price  = latest ? latest.value : null;
-    const chg    = (latest&&prev) ? latest.value-prev.value : null;
-    const cm     = contractMonths[i];
-    const label  = cm ? monthLabel(cm.year,cm.month) : `Contract ${i+1}`;
-    const isFront = i===0;
-    const priceStr = price!==null ? `$${price.toFixed(3)}` : '—';
-    const chgStr = chg!==null
-      ? `<span class="fut-chg" style="color:${chg>=0?'var(--green)':'var(--red)'}">${chg>=0?'+':''}${chg.toFixed(3)} $/MMBtu</span>`
-      : '';
-    return`<div class="fut-box${isFront?' front':''}">
-      <div class="fut-label">${isFront?'Front Month':'Contract '+(i+1)}</div>
-      <div class="fut-month">${label}</div>
-      <div class="fut-price">${priceStr}</div>
-      ${chgStr}
-      <div style="font-size:9px;color:var(--text3);margin-top:3px;font-family:var(--mono)">${latest?latest.date:''}</div>
-    </div>`;
-  }).join('');
+// ── DEVIATION CHART ───────────────────────────────────────────────────────────
+function renderDevChart(){
+  const filtered=filterByWindow(storageData);
+  if(!filtered.length) return;
+  const dates=filtered.map(d=>d.date);
+  const band5y=compute5y(storageData,dates);
+  const devs=filtered.map((d,i)=>band5y[i].avg!=null?d.value-band5y[i].avg:null);
+  const labels=dates.map(d=>fmtDate(d));
+  const surplusData=devs.map(v=>v!=null&&v>=0?v:0);
+  const deficitData=devs.map(v=>v!=null&&v<0?v:0);
+  document.getElementById('spin-dev').style.display='none';
+  document.getElementById('wrap-dev').style.display='block';
+  if(charts.dev){ charts.dev.destroy(); charts.dev=null; }
+  charts.dev=new Chart(document.getElementById('c-dev').getContext('2d'),{
+    type:'bar',
+    data:{labels,datasets:[
+      {label:'Surplus',data:surplusData,backgroundColor:'rgba(255,123,114,0.75)',borderWidth:0,borderRadius:1},
+      {label:'Deficit',data:deficitData,backgroundColor:'rgba(63,185,80,0.75)',borderWidth:0,borderRadius:1},
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,animation:{duration:300},
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{...baseTooltip(),callbacks:{
+          title:items=>dates[items[0]?.dataIndex]||'',
+          label:c=>{const v=devs[c.dataIndex];if(v==null)return null;return ` ${v>=0?'Surplus':'Deficit'}: ${v>=0?'+':''}${Math.round(v).toLocaleString()} Bcf`;},
+          filter:item=>{const v=devs[item.dataIndex];return v!=null&&(item.datasetIndex===0?v>=0:v<0);}
+        }}
+      },
+      scales:{
+        x:{stacked:true,...baseXScale()},
+        y:{stacked:true,...baseYScale(v=>(v>=0?'+':'')+Math.round(v).toLocaleString())}
+      }
+    }
+  });
 }
 
-// ── RIG STATS ─────────────────────────────────────────────────────────────────
-function renderRigStats(){
-  if(!DATA.rigs.length) return;
-  const latest = DATA.rigs[DATA.rigs.length-1];
-  const r5 = compute5y(DATA.rigs,[latest.date],true);
-  const avg = r5.avgs[0];
-  const devPct = avg ? ((latest.value-avg)/avg*100) : null;
-
-  // 52w high/low
-  const cutoff = new Date(); cutoff.setFullYear(cutoff.getFullYear()-1);
-  const yr = DATA.rigs.filter(d=>parseDate(d.date)>=cutoff);
-  const hi = yr.length ? Math.max(...yr.map(d=>d.value)) : null;
-  const lo = yr.length ? Math.min(...yr.map(d=>d.value)) : null;
-
-  document.getElementById('rig-cur').textContent = Math.round(latest.value);
-  document.getElementById('rig-cur-dt').textContent = latest.date;
-  document.getElementById('rig-avg').textContent = avg ? Math.round(avg) : '—';
-  document.getElementById('rig-vs').textContent = devPct!==null ? fmtPct(devPct) : '—';
-  document.getElementById('rig-vs').style.color = devPct!==null
-    ? (Math.abs(devPct)<5?'var(--yellow)':devPct>0?'var(--red)':'var(--green)') : 'var(--text)';
-  document.getElementById('rig-hi').textContent = hi!==null ? Math.round(hi) : '—';
-  document.getElementById('rig-lo').textContent = lo!==null ? Math.round(lo) : '—';
-  document.getElementById('rigs-meta').style.display='flex';
-}
-
-// ── WINDOW / MISC ─────────────────────────────────────────────────────────────
+// ── WINDOW / UI ───────────────────────────────────────────────────────────────
 function setWindow(w){
-  if(currentWindow===w)return; currentWindow=w;
-  Object.keys(TW).forEach(k=>document.getElementById('tw-'+k).classList.toggle('on',k===w));
+  if(currentWindow===w) return;
+  currentWindow=w;
+  Object.keys(WINDOWS).forEach(k=>document.getElementById('tw-'+k).classList.toggle('on',k===w));
   renderAll();
 }
-function resetSpinners(){
-  ['wrap-stor','wrap-fut','wrap-rig'].forEach(id=>document.getElementById(id).style.display='none');
-  ['spin-stor','spin-fut','spin-rig'].forEach(id=>{
-    document.getElementById(id).style.display='block';
-    document.getElementById(id).innerHTML='<span class="sp"></span>Loading…';
-  });
-  document.getElementById('rigs-meta').style.display='none';
+
+function updateSubtitles(){
+  const lbl={max:'full','5y':'5-year','2y':'2-year','1y':'1-year',ytd:'YTD','3m':'3-month','1m':'1-month'};
+  const w=lbl[currentWindow]||currentWindow;
+  document.getElementById('score-sub').textContent=`Weekly · Score [−5, +5] · ${w} history`;
+  document.getElementById('ngf-sub').textContent  =`Weekly · $/MMBtu · Yahoo Finance · ${w} history`;
+  document.getElementById('stor-sub').textContent =`Weekly · Bcf · ${w} history vs 5-year range`;
+  document.getElementById('dev-sub').textContent  =`Weekly · Bcf · ${w} surplus / deficit vs 5y avg`;
 }
+
 function toggleAccordion(){
-  const body=document.getElementById('accordion-body'),arrow=document.getElementById('accordion-arrow');
-  const open=body.style.display==='none'; body.style.display=open?'block':'none';
+  const body=document.getElementById('acc-body'),arrow=document.getElementById('acc-arrow');
+  const open=body.style.display==='none';
+  body.style.display=open?'block':'none';
   arrow.style.transform=open?'rotate(90deg)':'rotate(0deg)';
+}
+
+// ── EXPORT ────────────────────────────────────────────────────────────────────
+function downloadTxt(filename, content){
+  const blob = new Blob([content], {type:'text/plain;charset=utf-8'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function exportScore(){
+  if(!storageData.length){ alert('No data loaded.'); return; }
+  const dates  = storageData.map(d=>d.date);
+  const band5y = compute5y(storageData, dates);
+  const rows   = storageData.map((d,i)=>{
+    const {avg} = band5y[i];
+    const score = avg!=null&&avg!==0 ? scoreFromDev((d.value-avg)/avg*100) : null;
+    const bias  = score!=null ? biasLabel(score).w : 'N/A';
+    const s     = score!=null ? (score>=0?'+':'')+score.toFixed(3) : 'N/A';
+    return `${fmtDate(d.date)}\t${s}\t${bias}`;
+  });
+  const header = `NatGas Fundamental Bias Score\nExported: ${new Date().toLocaleString('en-GB')}\n\nDate\t\t\tScore\tBias\n${'─'.repeat(50)}`;
+  downloadTxt('natgas_bias_score.txt', header+'\n'+rows.join('\n'));
+}
+
+function exportNgf(){
+  if(!ngfData.length){ alert('No NGF data loaded.'); return; }
+  const rows = ngfData.map(d=>
+    `${fmtDateFromTs(d.ts)}\t${d.open.toFixed(3)}\t${d.high.toFixed(3)}\t${d.low.toFixed(3)}\t${d.close.toFixed(3)}`
+  );
+  const header = `NG=F Natural Gas Futures — Weekly OHLC\nSource: Yahoo Finance\nExported: ${new Date().toLocaleString('en-GB')}\n\nDate\t\t\tOpen\tHigh\tLow\tClose\n${'─'.repeat(60)}`;
+  downloadTxt('ngf_weekly_ohlc.txt', header+'\n'+rows.join('\n'));
+}
+
+function exportStorage(){
+  if(!storageData.length){ alert('No storage data loaded.'); return; }
+  const dates  = storageData.map(d=>d.date);
+  const band5y = compute5y(storageData, dates);
+  const rows   = storageData.map((d,i)=>{
+    const {avg,min,max} = band5y[i];
+    const dev  = avg!=null ? (d.value-avg).toFixed(1) : 'N/A';
+    const pct  = avg!=null&&avg!==0 ? ((d.value-avg)/avg*100).toFixed(2)+'%' : 'N/A';
+    const a    = avg!=null ? Math.round(avg).toString() : 'N/A';
+    const mn   = min!=null ? Math.round(min).toString() : 'N/A';
+    const mx   = max!=null ? Math.round(max).toString() : 'N/A';
+    return `${fmtDate(d.date)}\t${Math.round(d.value)}\t${a}\t${dev}\t${pct}\t${mn}\t${mx}`;
+  });
+  const header = `Natural Gas Storage — Lower 48\nSource: EIA · NW2_EPG0_SWO_R48_BCF\nExported: ${new Date().toLocaleString('en-GB')}\n\nDate\t\t\tBcf\t5y Avg\tDev Bcf\tDev %\t5y Min\t5y Max\n${'─'.repeat(75)}`;
+  downloadTxt('natgas_storage.txt', header+'\n'+rows.join('\n'));
+}
+
+function exportDev(){
+  if(!storageData.length){ alert('No storage data loaded.'); return; }
+  const dates  = storageData.map(d=>d.date);
+  const band5y = compute5y(storageData, dates);
+  const rows   = storageData.map((d,i)=>{
+    const {avg} = band5y[i];
+    if(avg==null) return null;
+    const dev  = d.value - avg;
+    const type = dev>=0 ? 'SURPLUS' : 'DEFICIT';
+    return `${fmtDate(d.date)}\t${(dev>=0?'+':'')+Math.round(dev)}\t${type}`;
+  }).filter(Boolean);
+  const header = `Storage vs 5-Year Average — Deviation\nSource: EIA · NW2_EPG0_SWO_R48_BCF\nExported: ${new Date().toLocaleString('en-GB')}\n\nDate\t\t\tDev (Bcf)\tType\n${'─'.repeat(50)}`;
+  downloadTxt('natgas_storage_deviation.txt', header+'\n'+rows.join('\n'));
 }
 
 loadAll();
